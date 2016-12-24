@@ -1,13 +1,25 @@
 package common.impl;
 
 import common.Page;
+import common.Position;
+
+import java.util.ArrayList;
 
 /**
  * Created by 徐江河 on 2016/12/24.
  */
 public class PageDefault implements Page {
-    public Object getView() {
-        // 返回值改成需要的类型（注意接口最好也进行相应的修改）
-        return null;
+
+    private ArrayList<Position> view;
+    private int number;
+
+    public PageDefault(ArrayList<Position> view, int number) {
+        this.view = view;
+        this.number = number;
     }
+
+    public ArrayList<Position> getView() {
+        return view;
+    }
+    public int getNumber() { return number; }
 }

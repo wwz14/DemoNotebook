@@ -3,6 +3,7 @@ package controller;
 import common.Page;
 import controller.impl.SaveNoteControllerDefault;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
 public abstract class SaveNoteController {
     private static SaveNoteController instance = new SaveNoteControllerDefault();
 
-    public abstract void savePages(List<Page> pages);
+    public abstract void savePages(ArrayList<Page> pages);
     public static SaveNoteController getInstance() {
         return instance;
     }

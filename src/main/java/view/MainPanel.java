@@ -54,12 +54,12 @@ public class MainPanel extends JPanel implements Observer, Observable {
         previewPane.setLocation(0,0);
         this.add(previewPane);
 
-
+        // 要处理DrawingPanel与PreviewPanel的Observe关系
 
     }
 
     public void update(Observable o, ObMessage arg) {
-        if (arg.getType()==MessageType.PAGE_UPDATE) {
+        if (arg.getType()==MessageType.HISTORY_UPDATE) {
             // 可能主Panel需要更新，也可能不需要
             ArrayList<Page> pages = (ArrayList<Page>) arg.getContent();
 

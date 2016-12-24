@@ -16,6 +16,6 @@ class PreviewPanel extends JPanel implements Observer {
     }
 
     public void update(Observable o, ObMessage arg) {
-
+        // 处理HISTORY_UPDATE与PAGE_ALTERED
     }
 }

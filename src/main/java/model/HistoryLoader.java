@@ -15,11 +15,11 @@ public class HistoryLoader implements Observable {
     }
 
     public void loadHistory() {
-
+        // TODO 从文件解序列化
     }
 
     public void notifyObservers(ObMessage arg) {
-
+        // TODO Observable接口实现参照MainPanel已经写好的
     }
 
     public void addObserver(Observer observer) {
