@@ -2,6 +2,7 @@ package controller.impl;
 
 import common.Page;
 import controller.SaveNoteController;
+import model.PageSaver;
 
 import java.util.List;
 
@@ -10,6 +11,6 @@ import java.util.List;
  */
 public class SaveNoteControllerDefault extends SaveNoteController {
     public void savePages(List<Page> pages) {
-        //TODO
+        PageSaver.getInstance().savePages(pages);
     }
 }

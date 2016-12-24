@@ -14,6 +14,9 @@ public class HistoryLoader implements Observable {
     private HistoryLoader(){
     }
 
+    public void loadHistory() {
+
+    }
 
     public void notifyObservers(ObMessage arg) {
 

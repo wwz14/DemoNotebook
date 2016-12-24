@@ -5,6 +5,8 @@ import common.Observable;
 import common.Observer;
 import common.Page;
 
+import java.util.List;
+
 /**
  * Created by 徐江河 on 2016/12/24.
  */
@@ -13,6 +15,10 @@ public class PageSaver implements Observable {
     private static PageSaver instance;
 
     private PageSaver() {
+
+    }
+
+    public void savePages(List<Page> pages) {
 
     }
 
