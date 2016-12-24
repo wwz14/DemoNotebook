@@ -43,7 +43,7 @@ public class MainPanel extends JPanel implements Observer, Observable {
     private void initPanes() {
         // 初始化各个子Panel，建立Observer/Observable关系
         // 例：
-        previewPane = new PreviewPanel();
+        previewPane = new PreviewPanel(this);
         this.addObserver(previewPane);
 
     }

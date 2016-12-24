@@ -8,6 +8,13 @@ import common.*;
  */
 class PreviewPanel extends JPanel implements Observer {
 
+    private MainPanel parent;
+
+    public PreviewPanel(MainPanel parent) {
+        super();
+        this.parent = parent;
+    }
+
     public void update(Observable o, ObMessage arg) {
 
     }
