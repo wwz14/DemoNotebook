@@ -5,33 +5,49 @@ import common.Observable;
 import common.Observer;
 import common.Page;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * Created by 徐江河 on 2016/12/24.
- */
+
 public class PageSaver implements Observable {
 
-    private static PageSaver instance;
+    private static PageSaver instance = new PageSaver();
+
+    private Set<Observer> observers = new HashSet<Observer>();
+
 
     private PageSaver() {
 
     }
 
     public void savePages(ArrayList<Page> pages) {
-        // TODO 将这个List进行文件序列化
+        String filename="history.txt";
+        try {
+            FileOutputStream fos = new FileOutputStream(filename);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(pages);
+            oos.close();
+            System.out.println("success to save");
+        } catch (Exception es) {
+            System.out.println(es);
+        }
     }
 
     public void notifyObservers(ObMessage arg) {
-
+        for (Observer observer : observers) {
+            observer.update(this, arg);
+        }
     }
 
     public void addObserver(Observer observer) {
-
+        observers.add(observer);
     }
 
     public void removeObserver(Observer observer) {
-
+        observers.remove(observer);
     }
 
     public static PageSaver getInstance() {

@@ -1,8 +1,12 @@
 package model;
 
-import common.ObMessage;
-import common.Observable;
-import common.Observer;
+import common.*;
+
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by 徐江河 on 2016/12/24.
@@ -11,23 +15,42 @@ public class HistoryLoader implements Observable {
 
     private static HistoryLoader instance = new HistoryLoader();
 
+    private Set<Observer> observers = new HashSet<Observer>();
+
+    private ArrayList<Page> pages;
+
+    public ArrayList<Page> getPages() {
+        return pages;
+    }
+
     private HistoryLoader(){
     }
 
     public void loadHistory() {
-        // TODO 从文件解序列化
+        String filename = "history.txt";
+        try {
+            FileInputStream fis = new FileInputStream(filename);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            pages = (ArrayList<Page>) ois.readObject();
+            ois.close();
+        }
+        catch (Exception es) {
+            System.out.println(es);
+        }
     }
 
     public void notifyObservers(ObMessage arg) {
-        // TODO Observable接口实现参照MainPanel已经写好的
+        for (Observer observer : observers) {
+            observer.update(this, arg);
+        }
     }
 
     public void addObserver(Observer observer) {
-
+        observers.add(observer);
     }
 
     public void removeObserver(Observer observer) {
-
+        observers.remove(observer);
     }
 
     public static HistoryLoader getInstance() {
