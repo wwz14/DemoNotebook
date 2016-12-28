@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,22 +57,23 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 	
 	// 工具栏  
 	public JPanel funcPanel;
-	public JButton penBtn;
-	public JButton brushBtn;
-	public JButton eraserBtn;
-//	public JButton textBtn;
-//	public JButton lineBtn;
-//	public JButton recBtn;
-//	public JButton roundRecBtn;
-//	public JButton ovelBtn;
-	public JButton colorBtn;  
-	public JLabel colorNameLabel, colorIconLabel; 
 	
-	// 清除画布内容按钮
-	public JButton clearBtn;
+	public JButton saveBtn;		// 保存按钮
+	
+	public JButton penBtn;		// 铅笔按钮
+	public JButton brushBtn;	// 刷子按钮
+	public JButton eraserBtn;	// 橡皮按钮
+//	public JButton textBtn;		// 文本按钮
+//	public JButton lineBtn;		// 直线按钮
+//	public JButton recBtn;		// 矩形按钮
+//	public JButton roundRecBtn;	// 圆角矩形按钮
+//	public JButton ovalBtn;		// 椭圆按钮
+	public JButton colorBtn;  	// 颜色按钮
+	public JLabel colorNameLabel, colorIconLabel; // 颜色按钮的子组件
+	public JButton clearBtn;	// 清除画布内容按钮
 	
 	// 保存画图轨迹的数组
-	public Vector<Position> thedraw = new Vector<Position>(); 
+	public Vector<Position> theDraw = new Vector<Position>(); 
 	
 	//当前画图类型，默认为画笔 
 	public StyleType style = StyleType.PEN; 	
@@ -86,22 +88,24 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 	String input = "";
 	
 	// 线条颜色，默认为黑色 
-	Color linecolor = Color.BLACK; 
+	Color lineColor = Color.BLACK; 
 	
 	public DrawingPanel() {  
 		this.setBackground(Color.WHITE);  
 		this.setLayout(new BorderLayout()); 
-		this.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));   
+		this.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 		
 		// 工具栏   
 		funcPanel = new JPanel();   
 		funcPanel.setBackground(Color.LIGHT_GRAY);   
-		funcPanel.setLayout(new BoxLayout(funcPanel, BoxLayout.Y_AXIS));   
+//		funcPanel.setLayout(new BoxLayout(funcPanel, BoxLayout.X_AXIS));   
+		funcPanel.setLayout(new GridLayout(1,8));
 		funcPanel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)); 
 		funcPanel.setSize(200, 300);
-		this.add(funcPanel, BorderLayout.EAST);   
+		this.add(funcPanel, BorderLayout.NORTH);   
 		
 		// 工具栏的组件  
+		saveBtn = new JButton("保存", new ImageIcon("src/main/java/img/save-small.png"));
 		penBtn = new JButton("画笔", new ImageIcon("src/main/java/img/pencil-small.png")); 
 		brushBtn = new JButton("刷子", new ImageIcon("src/main/java/img/brush-small.png"));  
 		eraserBtn = new JButton("橡皮", new ImageIcon("src/main/java/img/eraser-small.jpg"));  
@@ -109,10 +113,18 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 //		lineBtn = new JButton("直线", new ImageIcon("img/sline.png"));  
 //		recBtn = new JButton("矩形", new ImageIcon("img/rec.png"));  
 //		roundRecBtn = new JButton("圆矩", new ImageIcon("img/frec.png"));  
-//		ovelBtn = new JButton("椭圆", new ImageIcon("img/eli.png")); 
-		colorBtn = new JButton("颜色", new ImageIcon("src/main/java/img/palette-small.png"));
+//		ovalBtn = new JButton("椭圆", new ImageIcon("img/eli.png")); 
+//		colorBtn = new JButton("颜色", new ImageIcon("src/main/java/img/palette-small.png"));
+		colorBtn = new JButton("");   
+		colorIconLabel = new JLabel("■");
+		colorNameLabel = new JLabel("       颜色");  
+		colorBtn.add(colorIconLabel);  
+		colorBtn.add(colorNameLabel);  
+		clearBtn = new JButton("清除所有");
 		
 		// 将组件加到工具栏上
+		funcPanel.add(saveBtn);
+		funcPanel.add(new JLabel("   "));// 用于填充gridLayout界面布局
 		funcPanel.add(penBtn);  
 		funcPanel.add(brushBtn); 
 		funcPanel.add(eraserBtn);  
@@ -120,10 +132,20 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 //		funcPanel.add(lineBtn);  
 //		funcPanel.add(recBtn); 
 //		funcPanel.add(roundRecBtn);  
-//		funcPanel.add(ovelBtn);  
+//		funcPanel.add(ovalBtn);  
 		funcPanel.add(colorBtn);  
+		funcPanel.add(new JLabel("   "));// 用于填充gridLayout界面布局
+		funcPanel.add(clearBtn);
+		
+//		saveBtn.setLocation(5, 5);
+//		penBtn.setLocation(25, 5);
+//		brushBtn.setLocation(45, 5);
+//		eraserBtn.setLocation(65, 5);
+//		colorBtn.setLocation(85, 5);
+//		clearBtn.setLocation(105, 5);
 		
 		// 事件处理   
+		saveBtn.addActionListener(this);
 		penBtn.addActionListener(this);  
 		brushBtn.addActionListener(this);  
 		eraserBtn.addActionListener(this);  
@@ -131,8 +153,9 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 //		lineBtn.addActionListener(this);  
 //		recBtn.addActionListener(this);  
 //		roundRecBtn.addActionListener(this);  
-//		ovelBtn.addActionListener(this); 
+//		ovalBtn.addActionListener(this); 
 		colorBtn.addActionListener(this);  
+		clearBtn.addActionListener(this);
 		
 		addMouseListener(this);   
 		addMouseMotionListener(this);   
@@ -162,17 +185,17 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 //		else if (event.getSource() == roundRecBtn)   {
 //			style = StyleType.ROUNDED_RECTANGLE;   
 //		}
-//		else if (event.getSource() == ovelBtn)  {
+//		else if (event.getSource() == ovalBtn)  {
 //			style = StyleType.OVAL; 
 //		}
 		else if (event.getSource() == colorBtn) {   
-			linecolor = JColorChooser.showDialog(null, "请选择颜色", Color.BLACK);   
-			colorIconLabel.setForeground(linecolor);   
+			lineColor = JColorChooser.showDialog(null, "请选择颜色", Color.BLACK);   
+			colorIconLabel.setForeground(lineColor);   
 		} 
-		else if (event.getActionCommand().equals("清空                    ")) {   
-			thedraw.removeAllElements();  
+		else if (event.getSource() == clearBtn) {   
+			theDraw.removeAllElements();  
 		} 
-		else if (event.getActionCommand().trim().equals("保存")) {  
+		else if (event.getSource() == saveBtn) {  
 			JFileChooser sfc = new JFileChooser();  
 			int flag = -1;  
 			try {    
@@ -187,35 +210,12 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 				try {   
 					FileOutputStream fos = new FileOutputStream(filename);    
 					ObjectOutputStream oos = new ObjectOutputStream(fos);   
-					oos.writeObject(thedraw);  
+					oos.writeObject(theDraw);  
 					oos.close();   
 				} catch (Exception ex) {  
 					ex.printStackTrace();  
 				}  
 			}   
-		} 
-		else if (event.getActionCommand().trim().equals("打开")) {  
-			JFileChooser ofc = new JFileChooser();   
-			int flag = -1;   
-			try {  
-				flag = ofc.showOpenDialog(this);  
-			} catch (HeadlessException he) {    
-				System.out.println("Open File Dialog Exception!"); 
-				he.printStackTrace();
-			}    
-			// 获取选择文件的路径 
-			if (flag == JFileChooser.APPROVE_OPTION) {  
-				String filename = ofc.getSelectedFile().getPath();  
-				try {    
-					FileInputStream fis = new FileInputStream(filename);     
-					ObjectInputStream ois = new ObjectInputStream(fis);      
-					thedraw = (Vector<Position>) ois.readObject();     
-					ois.close();  
-				}
-				catch (Exception ex) {    
-					System.out.println(ex);    
-				}  
-			}  
 		}    
 		repaint();
 	}  
@@ -224,15 +224,35 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 	public void paintComponent(Graphics g) {  
 		super.paintComponent(g);   
 		draw((Graphics2D) g);  
+		
+		drawNoteLines(g);
 	}   
 	
+    public void drawNoteLines(Graphics g){
+    	g.setColor(Color.GRAY);
+    	g.drawLine(30, 80, 730, 80);
+    	g.drawLine(30, 130, 730, 130);
+    	g.drawLine(30, 180, 730, 180);
+    	g.drawLine(30, 230, 730, 230);
+    	g.drawLine(30, 280, 730, 280);
+    	g.drawLine(30, 330, 730, 330);
+    	g.drawLine(30, 380, 730, 380);
+    	g.drawLine(30, 430, 730, 430);
+    	g.drawLine(30, 480, 730, 480);
+    	g.drawLine(30, 530, 730, 530);
+    	//g.drawLine(30, 580, 730, 580);
+    	//g.drawLine(30, 630, 730, 630);
+    	//g.drawLine(30, 680, 730, 680);
+    	//g.drawLine(30, 730, 730, 730);
+    }
+    
 	// 从数组中取出一个点后画图  
 	public void draw(Graphics2D g) { 
-		int n = thedraw.size();  
+		int n = theDraw.size();  
 		Position p;  
 		for (int i = 0; i < n; i++) {  
 			try {   
-				p = thedraw.get(i);  
+				p = theDraw.get(i);  
 				if (p.type == StyleType.PEN) {// 画笔    
 					x1 = x2 = p.x;    
 					y1 = y2 = p.y;    
@@ -247,7 +267,7 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 							i--;    
 							break;    
 						}    
-						p = thedraw.get(i);      
+						p = theDraw.get(i);      
 						x1 = x2;    
 						y1 = y2;    
 					}   
@@ -260,7 +280,7 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 						if (i == n) {     
 							i--;      
 							break;    
-						}       p = thedraw.get(i);   
+						}       p = theDraw.get(i);   
 					}   
 				}     
 				if (p.type == StyleType.ERASER) {// 橡皮    
@@ -272,7 +292,7 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 							i--;       
 							break;    
 						}    
-						p = thedraw.get(i);    
+						p = theDraw.get(i);    
 					}   
 				}  
 //				if (p.type == StyleType.TEXT) {// 文字    
@@ -422,8 +442,8 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 		p.y = e.getY();  
 		p.type = style; 
 		p.s = input; 
-		p.color = linecolor;  
-		thedraw.add(p); 
+		p.color = lineColor;  
+		theDraw.add(p); 
 	}
 	
 	public void mouseExited(MouseEvent e) { 
@@ -437,8 +457,8 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 		p.y = e.getY();  
 		p.type = StyleType.TEMPORARY_STOP; 
 		p.s = input;   
-		p.color = linecolor;  
-		thedraw.add(p);  
+		p.color = lineColor;  
+		theDraw.add(p);  
 		repaint(); 
 	}   
 	
@@ -458,8 +478,8 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 			p.type = style;  
 		}
 		p.s = input;   
-		p.color = linecolor;  
-		thedraw.add(p);  
+		p.color = lineColor;  
+		theDraw.add(p);  
 		repaint(); 
 	} 
 	
@@ -480,8 +500,30 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
     }
 
     public void update(Observable source, ObMessage message) {
-        // TODO 处理PAGE_REPLACE消息
-    }
+    	// 应该就是把PagePanel里面选择的Page加载到DrawingPanel里吧，就是所谓的“打开”操作
+    	// 需要后期修改…
+		JFileChooser ofc = new JFileChooser();   
+		int flag = -1;   
+		try {  
+			flag = ofc.showOpenDialog(this);  
+		} catch (HeadlessException he) {    
+			System.out.println("Open File Dialog Exception!"); 
+			he.printStackTrace();
+		}    
+		// 获取选择文件的路径 
+		if (flag == JFileChooser.APPROVE_OPTION) {  
+			String filename = ofc.getSelectedFile().getPath();  
+			try {    
+				FileInputStream fis = new FileInputStream(filename);     
+				ObjectInputStream ois = new ObjectInputStream(fis);      
+				theDraw = (Vector<Position>) ois.readObject();     
+				ois.close();  
+			}
+			catch (Exception ex) {    
+				System.out.println(ex);    
+			}  
+		}  
+	} 
 
     public static void main(String[] args){
     	JFrame jf = new JFrame();
@@ -490,4 +532,5 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
     	jf.setSize(800, 600);
     	jf.setVisible(true);
     }
+   
 }
