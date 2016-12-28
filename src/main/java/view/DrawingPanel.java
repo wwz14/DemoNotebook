@@ -1,7 +1,5 @@
 package view;
 
-import type.StyleType;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -13,10 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -24,19 +19,14 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import common.ObMessage;
@@ -53,416 +43,215 @@ import common.Position;
  * TODO 处理PAGE_REPLACE信息
  */
 class DrawingPanel extends JPanel implements ActionListener, MouseListener,  MouseMotionListener, Observable, Observer {
-	
-	// 工具栏  
-	public JPanel funcPanel;
-	public JButton penBtn;
-	public JButton brushBtn;
-	public JButton eraserBtn;
-//	public JButton textBtn;
-//	public JButton lineBtn;
-//	public JButton recBtn;
-//	public JButton roundRecBtn;
-//	public JButton ovelBtn;
-	public JButton colorBtn;  
-	public JLabel colorNameLabel, colorIconLabel; 
-	
-	// 清除画布内容按钮
-	public JButton clearBtn;
-	
-	// 保存画图轨迹的数组
-	public Vector<Position> thedraw = new Vector<Position>(); 
-	
-	//当前画图类型，默认为画笔 
-	public StyleType style = StyleType.PEN; 	
-	
-	// 当前点的坐标，默认为界面左上角
-	int x1 = 0;
-	int x2 = 0; 
-	int y1 = 0;  
-	int y2 = 0; 
-	
-	// 输入文字的内容，默认为空  
-	String input = "";
-	
-	// 线条颜色，默认为黑色 
-	Color linecolor = Color.BLACK; 
-	
-	public DrawingPanel() {  
-		this.setBackground(Color.WHITE);  
-		this.setLayout(new BorderLayout()); 
-		this.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));   
-		
-		// 工具栏   
-		funcPanel = new JPanel();   
-		funcPanel.setBackground(Color.LIGHT_GRAY);   
-		funcPanel.setLayout(new BoxLayout(funcPanel, BoxLayout.Y_AXIS));   
-		funcPanel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)); 
-		funcPanel.setSize(200, 300);
-		this.add(funcPanel, BorderLayout.EAST);   
-		
-		// 工具栏的组件  
-		penBtn = new JButton("画笔", new ImageIcon("src/main/java/img/pencil-small.png")); 
-		brushBtn = new JButton("刷子", new ImageIcon("src/main/java/img/brush-small.png"));  
-		eraserBtn = new JButton("橡皮", new ImageIcon("src/main/java/img/eraser-small.jpg"));  
-//		textBtn = new JButton("文字", new ImageIcon("img/word.png"));  
-//		lineBtn = new JButton("直线", new ImageIcon("img/sline.png"));  
-//		recBtn = new JButton("矩形", new ImageIcon("img/rec.png"));  
-//		roundRecBtn = new JButton("圆矩", new ImageIcon("img/frec.png"));  
-//		ovelBtn = new JButton("椭圆", new ImageIcon("img/eli.png")); 
-		colorBtn = new JButton("颜色", new ImageIcon("src/main/java/img/palette-small.png"));
-		
-		// 将组件加到工具栏上
-		funcPanel.add(penBtn);  
-		funcPanel.add(brushBtn); 
-		funcPanel.add(eraserBtn);  
-//		funcPanel.add(textBtn);  
-//		funcPanel.add(lineBtn);  
-//		funcPanel.add(recBtn); 
-//		funcPanel.add(roundRecBtn);  
-//		funcPanel.add(ovelBtn);  
-		funcPanel.add(colorBtn);  
-		
-		// 事件处理   
-		penBtn.addActionListener(this);  
-		brushBtn.addActionListener(this);  
-		eraserBtn.addActionListener(this);  
-//		textBtn.addActionListener(this);  
-//		lineBtn.addActionListener(this);  
-//		recBtn.addActionListener(this);  
-//		roundRecBtn.addActionListener(this);  
-//		ovelBtn.addActionListener(this); 
-		colorBtn.addActionListener(this);  
-		
-		addMouseListener(this);   
-		addMouseMotionListener(this);   
-	}    
-	
-	// 记录鼠标选择的功能  
-	public void actionPerformed(ActionEvent event) {  
-		if (event.getSource() == penBtn)  {  
-			style = StyleType.PEN; 
-		}
-		else if (event.getSource() == brushBtn)   {
-			style = StyleType.BRUSH;  
-		}
-		else if (event.getSource() == eraserBtn)  {
-			style = StyleType.ERASER;  
-		}
-//		else if (event.getSource() == textBtn) { 
-//			style = StyleType.TEXT;   
-//			input = JOptionPane.showInputDialog("输入文字后在画板上点击放置");  
-//		} 
-//		else if (event.getSource() == lineBtn)   {
-//			style = StyleType.LINE;  
-//		}
-//		else if (event.getSource() == recBtn)   {
-//			style = StyleType.RECTANGLE; 
-//		}
-//		else if (event.getSource() == roundRecBtn)   {
-//			style = StyleType.ROUNDED_RECTANGLE;   
-//		}
-//		else if (event.getSource() == ovelBtn)  {
-//			style = StyleType.OVAL; 
-//		}
-		else if (event.getSource() == colorBtn) {   
-			linecolor = JColorChooser.showDialog(null, "请选择颜色", Color.BLACK);   
-			colorIconLabel.setForeground(linecolor);   
-		} 
-		else if (event.getActionCommand().equals("清空                    ")) {   
-			thedraw.removeAllElements();  
-		} 
-		else if (event.getActionCommand().trim().equals("保存")) {  
-			JFileChooser sfc = new JFileChooser();  
-			int flag = -1;  
-			try {    
-				flag = sfc.showSaveDialog(this);   // 显示保存文件的对话框   
-			} catch (HeadlessException he) {  
-				System.out.println("Save File Dialog Exception!");
-				he.printStackTrace();
-			}
-			// 获取选择文件的路径   
-			if (flag == JFileChooser.APPROVE_OPTION) {  
-				String filename = sfc.getSelectedFile().getPath();  
-				try {   
-					FileOutputStream fos = new FileOutputStream(filename);    
-					ObjectOutputStream oos = new ObjectOutputStream(fos);   
-					oos.writeObject(thedraw);  
-					oos.close();   
-				} catch (Exception ex) {  
-					ex.printStackTrace();  
-				}  
-			}   
-		} 
-		else if (event.getActionCommand().trim().equals("打开")) {  
-			JFileChooser ofc = new JFileChooser();   
-			int flag = -1;   
-			try {  
-				flag = ofc.showOpenDialog(this);  
-			} catch (HeadlessException he) {    
-				System.out.println("Open File Dialog Exception!"); 
-				he.printStackTrace();
-			}    
-			// 获取选择文件的路径 
-			if (flag == JFileChooser.APPROVE_OPTION) {  
-				String filename = ofc.getSelectedFile().getPath();  
-				try {    
-					FileInputStream fis = new FileInputStream(filename);     
-					ObjectInputStream ois = new ObjectInputStream(fis);      
-					thedraw = (Vector<Position>) ois.readObject();     
-					ois.close();  
-				}
-				catch (Exception ex) {    
-					System.out.println(ex);    
-				}  
-			}  
-		}    
-		repaint();
-	}  
-	
-	// paintComponent方法调用绘制方法使在容器内绘制而不超出容器 
-	public void paintComponent(Graphics g) {  
-		super.paintComponent(g);   
-		draw((Graphics2D) g);  
-	}   
-	
-	// 从数组中取出一个点后画图  
-	public void draw(Graphics2D g) { 
-		int n = thedraw.size();  
-		Position p;  
-		for (int i = 0; i < n; i++) {  
-			try {   
-				p = thedraw.get(i);  
-				if (p.type == StyleType.PEN) {// 画笔    
-					x1 = x2 = p.x;    
-					y1 = y2 = p.y;    
-					while (p.type == StyleType.PEN) {    
-						x2 = p.x;   
-						y2 = p.y;    
-						Line2D t = new Line2D.Double(x1, y1, x2, y2);    
-						g.setColor(p.color);    
-						g.draw(t);// 递归画图 
-						i++;     
-						if (i == n) {    
-							i--;    
-							break;    
-						}    
-						p = thedraw.get(i);      
-						x1 = x2;    
-						y1 = y2;    
-					}   
-				}     
-				if (p.type == StyleType.BRUSH) {// 刷子 
-					while (p.type == StyleType.BRUSH) {     
-						g.setColor(p.color);   
-						g.drawString("●", p.x, p.y);// 采用字符使点变大      
-						i++;      
-						if (i == n) {     
-							i--;      
-							break;    
-						}       p = thedraw.get(i);   
-					}   
-				}     
-				if (p.type == StyleType.ERASER) {// 橡皮    
-					while (p.type == StyleType.ERASER) {     
-						g.setColor(Color.WHITE);     
-						g.drawString("■", p.x, p.y);// 采用字符使点变大    
-						i++;    
-						if (i == n) {    
-							i--;       
-							break;    
-						}    
-						p = thedraw.get(i);    
-					}   
-				}  
-//				if (p.type == StyleType.TEXT) {// 文字    
-//					while (p.type == StyleType.TEXT) {   
-//						g.setColor(p.color);   
-//						g.drawString(p.s, p.x, p.y);// 点状绘制实时字符     
-//						i++;      
-//						if (i == n) {   
-//							i--;       
-//							break;   
-//						}       p = thedraw.get(i);     
-//					}   
-//				}      
-//				if (p.type == StyleType.LINE) {// 直线   
-//					x1 = p.x;    
-//					y1 = p.y;   
-//					i++;    
-//					p = thedraw.get(i);     
-//					x2 = p.x;      
-//					y2 = p.y;     
-//					if (p.type == StyleType.LINE) {
-//						// 不存在翻转问题，故不用交换坐标    
-//						Line2D t = new Line2D.Double(x1, y1, x2, y2);  
-//						g.setColor(p.color);   
-//						g.draw(t);    
-//						thedraw.remove(i);     
-//					} else if (p.type == StyleType.TEMPORARY_STOP) { 
-//						Line2D t = new Line2D.Double(x1, y1, x2, y2);      
-//						g.setColor(p.color);     
-//						g.draw(t);  
-//					} else      
-//						i--;
-//				}    
-//				if (p.type == StyleType.RECTANGLE) {// 矩形 
-//					x1 = p.x;    
-//					y1 = p.y;   
-//					i++;   
-//					p = thedraw.get(i);    
-//					x2 = p.x;    
-//					y2 = p.y;     
-//					if (x2 < x1) {// 交换坐标使图形能上下左右翻转  
-//						int temp;   
-//						temp = x1;  
-//						x1 = x2;   
-//						x2 = temp;    
-//					}  
-//					if (y2 < y1) {    
-//						int temp;     
-//						temp = y1;    
-//						y1 = y2;   
-//						y2 = temp;   
-//					}     
-//					if (p.type == StyleType.RECTANGLE) {// 鼠标按下则动态变化   
-//						Rectangle2D t = new Rectangle2D.Double(x1, y1, x2 - x1,         y2 - y1);   
-//						g.setColor(p.color);     
-//						g.draw(t);      
-//						thedraw.remove(i);  
-//					} else if (p.type == StyleType.TEMPORARY_STOP) {// 鼠标松开则固定绘图  
-//						Rectangle2D t = new Rectangle2D.Double(x1, y1, x2 - x1,         y2 - y1);   
-//						g.setColor(p.color);     
-//						g.draw(t);     
-//					} else 
-//						i--;   
-//				}     
-//				if (p.type == StyleType.ROUNDED_RECTANGLE) {// 圆角矩形     
-//					x1 = p.x;    
-//					y1 = p.y;  
-//					i++;  
-//					p = thedraw.get(i);  
-//					x2 = p.x;  
-//					y2 = p.y;   
-//					if (x2 < x1) {      
-//						int temp;     
-//						temp = x1;    
-//						x1 = x2;    
-//						x2 = temp; 
-//					}      
-//					if (y2 < y1) {    
-//						int temp;     
-//						temp = y1;       
-//						y1 = y2;  
-//						y2 = temp;     
-//					} 
-//					if (p.type == StyleType.ROUNDED_RECTANGLE) { 
-//						RoundRectangle2D t = new RoundRectangle2D.Double(x1,         y1, x2 - x1, y2 - y1, 20, 20);    
-//						g.setColor(p.color);   
-//						g.draw(t);     
-//						thedraw.remove(i); 
-//					} else if (p.type == StyleType.TEMPORARY_STOP) {  
-//						RoundRectangle2D t = new RoundRectangle2D.Double(x1,         y1, x2 - x1, y2 - y1, 20, 20);   
-//						g.setColor(p.color);     
-//						g.draw(t); 
-//					} else     
-//						i--;   
-//				}     
-//				if (p.type == StyleType.OVAL) {// 椭圆  
-//					x1 = p.x;   
-//					y1 = p.y;   
-//					i++;    
-//					p = thedraw.get(i);    
-//					x2 = p.x;    
-//					y2 = p.y;   
-//					if (x2 < x1) {     
-//						int temp;   
-//						temp = x1;   
-//						x1 = x2;   
-//						x2 = temp;    
-//					} 
-//					if (y2 < y1) {    
-//						int temp;     
-//						temp = y1;   
-//						y1 = y2;    
-//						y2 = temp;     
-//					}   
-//					if (p.type == StyleType.OVAL) {   
-//						Ellipse2D t = new Ellipse2D.Double(x1, y1, x2 - x1, y2         - y1);    
-//						g.setColor(p.color);      
-//						g.draw(t);    
-//						thedraw.remove(i);   
-//					} 
-//					else if (p.type == StyleType.TEMPORARY_STOP) {    
-//						Ellipse2D t = new Ellipse2D.Double(x1, y1, x2 - x1, y2         - y1);     
-//						g.setColor(p.color);    
-//						g.draw(t); 
-//					} 
-//					else      
-//						i--;   
-//				}      
-			} catch (Exception ex) {  
-				ex.printStackTrace();
-			}   
-		}  
-	}  
+    JMenuBar mb;// 菜单栏
+    JMenu menu1, menu2, menu3;
+    JMenuItem i1, i2, i3;
+    JPanel jp1;
+    // 工具栏
+    public JButton anj0, anj1, anj2;
+    ArrayList<Position> thedraw = new ArrayList<Position>();
+    // 保存画图轨迹的数组
+    int style = 0;
+    //保存画图类型，默认为画笔
+    int x1 = 0;
+    // 保存点的坐标
+    int x2 = 0;
+    int y1 = 0;
+    int y2 = 0;
 
-	public void mouseClicked(MouseEvent e) {
-		// 用mousePressed实现
-	} 
-	
-	public void mouseEntered(MouseEvent e) {  
-		// 暂时没有鼠标进入某个按钮的监听
-	}     
-	
-	// 鼠标按下记录画图轨迹
-	public void mousePressed(MouseEvent e) {  
-		Position p = new Position();  
-		p.x = e.getX();  
-		p.y = e.getY();  
-		p.type = style; 
-		p.s = input; 
-		p.color = linecolor;  
-		thedraw.add(p); 
-	}
-	
-	public void mouseExited(MouseEvent e) { 
-		// 用mouseReleased实现
-	}  
-	
-	// 鼠标松开则type = -1，停止画图，但仍记录轨迹 
-	public void mouseReleased(MouseEvent e) { 
-		Position p = new Position();  
-		p.x = e.getX();  
-		p.y = e.getY();  
-		p.type = StyleType.TEMPORARY_STOP; 
-		p.s = input;   
-		p.color = linecolor;  
-		thedraw.add(p);  
-		repaint(); 
-	}   
-	
-	public void mouseMoved(MouseEvent e) { 
-		// 用mouseDragged实现
-	}   
-	
-	// 鼠标拖动记录画图轨迹  
-	public void mouseDragged(MouseEvent e) {  
-		Position p = new Position();  
-		p.x = e.getX(); 
-		p.y = e.getY();  
-		if (style == StyleType.TEXT)   {
-			p.type = StyleType.TEMPORARY_STOP;// 禁止文字拖动   
-		}
-		else { 
-			p.type = style;  
-		}
-		p.s = input;   
-		p.color = linecolor;  
-		thedraw.add(p);  
-		repaint(); 
-	} 
-	
+    public DrawingPanel() {
+        setBackground(Color.WHITE);
+        setLayout(new BorderLayout());
+        setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+        // 上部菜单栏
+        mb = new JMenuBar();
+        mb.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        add(mb, BorderLayout.NORTH);
+        // 加入菜单栏的组件
+        menu1 = new JMenu("  文件     ");
+        menu2 = new JMenu("  编辑     ");
+        menu3 = new JMenu("  帮助     ");
+        i1 = new JMenuItem("打开                    ", new ImageIcon(     "img/open.png"));
+        i2 = new JMenuItem("保存                    ", new ImageIcon(     "img/save.png"));
+        i3 = new JMenuItem("清空                    ", new ImageIcon(     "img/clear.png"));
+        menu1.add(i1);
+        menu1.addSeparator();
+        menu1.add(i2);
+        menu2.add(i3);
+        mb.add(menu1);
+        mb.add(menu2);
+        mb.add(menu3);
+        add(mb, BorderLayout.NORTH);
+        // 侧边工具栏
+
+        jp1 = new JPanel();
+        jp1.setBackground(Color.LIGHT_GRAY);
+        jp1.setLayout(new BoxLayout(jp1, BoxLayout.Y_AXIS));
+        jp1.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        add(jp1, BorderLayout.WEST);
+        // 加入工具栏的组件
+        anj0 = new JButton("画笔");
+        anj1 = new JButton("刷子");
+        anj2 = new JButton("橡皮");
+        jp1.add(anj0);
+        jp1.add(anj1);
+        jp1.add(anj2);
+        // 事件处理
+        i1.addActionListener(this);
+        i2.addActionListener(this);
+        i3.addActionListener(this);
+        anj0.addActionListener(this);
+        anj1.addActionListener(this);
+        anj2.addActionListener(this);
+        addMouseListener(this);
+        addMouseMotionListener(this);
+    }    // 记录鼠标选择的功能
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == anj0)  {
+            style = 0;
+        }
+        else if (e.getSource() == anj1)   {
+            style = 1;
+        }
+        else if (e.getSource() == anj2)  {
+            style = 2;
+        }
+        else if (e.getActionCommand().equals("清空                    ")) {
+            thedraw.clear();
+        }
+        else if (e.getActionCommand().equals("保存                    ")) {
+            JFileChooser sfc = new JFileChooser();
+            int flag = -1;
+            // 显示保存文件的对话框
+            try {
+                flag = sfc.showSaveDialog(this);
+            } catch (HeadlessException he) {
+                System.out.println("Save File Dialog Exception!");
+            }
+            // 获取选择文件的路径
+            if (flag == JFileChooser.APPROVE_OPTION) {
+                String filename = sfc.getSelectedFile().getPath();
+                try {
+                    FileOutputStream fos = new FileOutputStream(filename);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(thedraw);
+                    oos.close();
+                } catch (Exception es) {
+                    System.out.println(es);
+                }
+            }
+        } else if (e.getActionCommand().equals("打开        "+ "            ")) {
+            JFileChooser ofc = new JFileChooser();
+            int flag = -1;
+            try {
+                flag = ofc.showOpenDialog(this);
+            } catch (HeadlessException he) {
+                System.out.println("Save File Dialog Exception!");
+            }    // 获取选择文件的路径
+            if (flag == JFileChooser.APPROVE_OPTION) {
+                String filename = ofc.getSelectedFile().getPath();
+                try {
+                    FileInputStream fis = new FileInputStream(filename);
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    thedraw = (ArrayList<Position>) ois.readObject();
+                    ois.close();
+                }
+                catch (Exception es) {
+                    System.out.println(es);
+                }
+            }
+        }
+        repaint();
+        // 刷新画板
+    }
+    // paintComponent方法调用绘制方法使在容器内绘制而不超出容器
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        draw((Graphics2D) g);
+    }
+    // 从数组中取出一个点后画图
+    public void draw(Graphics2D g) {
+        int n = thedraw.size();
+        Position p;
+        for (int i = 0; i < n; i++) {
+                p = thedraw.get(i);
+                if (p.type == 0) {// 画笔
+                    x1 = x2 = p.x;
+                    y1 = y2 = p.y;
+                    while (p.type == 0) {
+                        x2 = p.x;
+                        y2 = p.y;
+                        Line2D t = new Line2D.Double(x1, y1, x2, y2);
+                        g.draw(t);// 递归画图
+                        i++;
+                        if (i == n) {
+                            i--;
+                            break;
+                        }
+                        p = thedraw.get(i);
+                        x1 = x2;
+                        y1 = y2;
+                    }
+                }
+                if (p.type == 1) {// 刷子
+                    while (p.type == 1) {
+                        g.drawString("●", p.x, p.y);// 采用字符使点变大
+                        i++;
+                        if (i == n) {
+                            i--;
+                            break;
+                        }       p = thedraw.get(i);
+                    }
+                }
+                if (p.type == 2) {// 橡皮
+                    while (p.type == 2) {
+                        g.setColor(Color.WHITE);
+                        g.drawString("■", p.x, p.y);// 采用字符使点变大
+                        i++;
+                        if (i == n) {
+                            i--;
+                            break;
+                        }
+                        p = thedraw.get(i);
+                    }
+                }
+        }
+    }
+    public void mouseClicked(MouseEvent e) {  }
+    public void mouseEntered(MouseEvent e) {  }     // 鼠标按下记录画图轨迹
+    public void mousePressed(MouseEvent e) {
+        Position p = new Position();
+        p.x = e.getX();
+        p.y = e.getY();
+        p.type = style;
+        thedraw.add(p);
+    }
+    public void mouseExited(MouseEvent e) {  }
+    // 鼠标松开则type = -1，停止画图，但仍记录轨迹
+    public void mouseReleased(MouseEvent e) {
+        Position p = new Position();
+        p.x = e.getX();
+        p.y = e.getY();
+        p.type = -1;
+        thedraw.add(p);
+        repaint();
+    }
+    public void mouseMoved(MouseEvent e) {  }
+    // 鼠标拖动记录画图轨迹
+    public void mouseDragged(MouseEvent e) {
+        Position p = new Position();
+        p.x = e.getX();
+        p.y = e.getY();
+        if (style == 3)   {
+            p.type = -1;// 禁止文字拖动
+        }
+        else  {
+            p.type = style;
+        }
+        thedraw.add(p);
+        repaint();
+    }
+
     private Set<Observer> observers = new HashSet<Observer>();
 
     public void notifyObservers(ObMessage arg) {
@@ -481,13 +270,5 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 
     public void update(Observable source, ObMessage message) {
         // TODO 处理PAGE_REPLACE消息
-    }
-
-    public static void main(String[] args){
-    	JFrame jf = new JFrame();
-    	DrawingPanel dp = new DrawingPanel();
-    	jf.add(dp);
-    	jf.setSize(800, 600);
-    	jf.setVisible(true);
     }
 }
