@@ -11,6 +11,7 @@ import javax.swing.*;
 import common.*;
 
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     private JPanel pagePanel;
     private JScrollPane scrollPane;
     private Set<Observer> observers = new HashSet<Observer>();
+    private ArrayList<SubPreviewPanel> subPanelList = new ArrayList<SubPreviewPanel>();
    
     
 
@@ -36,11 +38,12 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         this.setBackground(Color.cyan);
         setLayout(null);
         
-        final GridBagConstraints vertical = new GridBagConstraints();
-        vertical.fill = GridBagConstraints.VERTICAL;
+//        final GridBagConstraints vertical = new GridBagConstraints();
+//        vertical.fill = GridBagConstraints.VERTICAL;
         
         pagePanel = new JPanel();
-        pagePanel.setLayout(new GridBagLayout()); 
+       pagePanel.setLayout(new GridLayout(1,100,0,0)); 
+        pagePanel.setLayout(null);
         pagePanel.setBackground(Color.RED);
         
 //        for(int i = 0; i < 100; i++)  
@@ -53,12 +56,12 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         this.add(backPanel);
         backPanel.setBackground(Color.ORANGE);
         backPanel.setLocation(0,42);
-        backPanel.setSize(200, 758);
+        backPanel.setSize(800, 158);
         
         scrollPane = new JScrollPane(pagePanel); 
         backPanel.add(scrollPane);
         scrollPane.setLocation(0,42);
-        scrollPane.setSize(200, 758);
+        scrollPane.setSize(800, 158);
         scrollPane.setVisible(true);
         //scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
       //  scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.H);
@@ -67,16 +70,20 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         add.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		SubPreviewPanel newpage = new SubPreviewPanel();
-        		 
-        		 pagePanel.setLayout(new GridBagLayout()); 
-        		 pagePanel.add(newpage,vertical);
+        		subPanelList.add(newpage);
+        		pagePanel.removeAll();
+        		pagePanel.setLayout(new GridLayout(1,100,2,2)); 
+        		//pagePanel.setLayout(null);
+        		for(SubPreviewPanel subpanel: subPanelList){
+        			pagePanel.add(subpanel);
+        		}
         		 backPanel.removeAll();
         		 scrollPane = new JScrollPane(pagePanel);
-        		 pagePanel.repaint();
+        		// pagePanel.repaint();
         		 backPanel.add(scrollPane);
         	        scrollPane.setLocation(0,0);
         	        scrollPane.setBackground(Color.PINK);
-        	        scrollPane.setSize(200, 758);
+        	        scrollPane.setSize(800, 158);
         	        scrollPane.setVisible(true);
         	        scrollPane.repaint();    	       
         	     backPanel.repaint();   
@@ -88,11 +95,11 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         funcPanel.setLayout(null);
         funcPanel.setBackground(Color.blue);
         this.add(funcPanel);
-        funcPanel.setSize(200, 42);
+        funcPanel.setSize(800, 42);
         funcPanel.setLocation(0,0);
         funcPanel.add(add);
         add.setSize(45, 42);
-        add.setLocation(156,0);
+        add.setLocation(758,0);
         
         
         

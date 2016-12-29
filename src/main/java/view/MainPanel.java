@@ -68,14 +68,14 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
     private void initView() {
         // 调整布局，添加各个子Panel等
         // 例：
-    	this.setSize(700,500);
+    	this.setSize(700,800);
     	this.setLayout(null);
     	this.add(previewPane);
     	this.add(drawingPane);
-    	previewPane.setLocation(0,0);
-        previewPane.setSize(200,800);
-        drawingPane.setLocation(200, 100);
-        drawingPane.setSize(600, 500);
+    	previewPane.setLocation(0,400);
+        previewPane.setSize(800,200);
+        drawingPane.setLocation(0, 0);
+        drawingPane.setSize(800, 400);
         this.setVisible(true);
         // 要处理DrawingPanel与PreviewPanel的Observe关系
 
