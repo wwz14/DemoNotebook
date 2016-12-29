@@ -3,6 +3,7 @@ package model;
 import common.Page;
 import common.Position;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -11,7 +12,11 @@ import java.util.ArrayList;
 public class HistoryLoaderTest {
     public static void main(String[] args){
         HistoryLoader his=  HistoryLoader.getInstance();
-        his.loadHistory();
+        try {
+            his.loadHistory();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         ArrayList<Page> pages =his.getPages();
         for(int i=0;i<pages.size();i++){
             Page page=pages.get(i);
