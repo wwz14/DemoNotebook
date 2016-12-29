@@ -4,6 +4,7 @@ package model;
 import common.Page;
 import common.Position;
 import common.impl.PageDefault;
+import type.StyleType;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,7 @@ public class PageSaverTest {
         Position position=new Position();
         position.x=1;
         position.y=2;
-        position.type=3;
+        position.type= StyleType.BRUSH;
         view.add(position);
         int number=6;
         Page page=new PageDefault(view,number);

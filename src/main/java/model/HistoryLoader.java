@@ -1,8 +1,13 @@
 package model;
 
-import common.*;
+import common.ObMessage;
+import common.Observable;
+import common.Observer;
+import common.Page;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,9 +32,18 @@ public class HistoryLoader implements Observable {
     }
 
     public void loadHistory() {
-        String filename = "history.txt";
+        //第一次的时候需要创建文件
+       String filename = "history.txt";
+        File file=new File(filename);
+        if(!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         try {
-            FileInputStream fis = new FileInputStream(filename);
+            FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
             pages = (ArrayList<Page>) ois.readObject();
             ois.close();
@@ -38,6 +52,8 @@ public class HistoryLoader implements Observable {
             System.out.println(es);
         }
     }
+
+
 
     public void notifyObservers(ObMessage arg) {
         for (Observer observer : observers) {
