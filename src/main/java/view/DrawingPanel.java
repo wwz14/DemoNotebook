@@ -523,7 +523,8 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 		//if (flag == JFileChooser.APPROVE_OPTION) {  // 获取选择文件的路径   
 		//	String filename = sfc.getSelectedFile().getPath();  
 			try {   
-				FileOutputStream fos = new FileOutputStream(filename);    
+				String fileName = directoryName + "";
+				FileOutputStream fos = new FileOutputStream(fileName);    
 				ObjectOutputStream oos = new ObjectOutputStream(fos);   
 				oos.writeObject(theDraw);  
 				oos.close();   
