@@ -31,16 +31,12 @@ public class HistoryLoader implements Observable {
     private HistoryLoader(){
     }
 
-    public void loadHistory() {
+    public void loadHistory() throws IOException {
         //第一次的时候需要创建文件
        String filename = "history.txt";
         File file=new File(filename);
         if(!file.exists()) {
-            try {
                 file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         try {
             FileInputStream fis = new FileInputStream(file);
