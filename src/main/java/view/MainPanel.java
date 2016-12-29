@@ -73,7 +73,7 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
     	this.add(previewPane);
     	this.add(drawingPane);
     	previewPane.setLocation(0,0);
-        previewPane.setSize(200,200);
+        previewPane.setSize(200,800);
         drawingPane.setLocation(200, 100);
         drawingPane.setSize(600, 500);
         this.setVisible(true);
