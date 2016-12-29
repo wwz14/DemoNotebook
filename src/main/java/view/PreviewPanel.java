@@ -35,7 +35,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     public PreviewPanel(MainPanel parent) {
         super();
         this.parent = parent;
-        this.setBackground(Color.cyan);
+        this.setBackground(Color.lightGray);
         setLayout(null);
         
 //        final GridBagConstraints vertical = new GridBagConstraints();
@@ -44,7 +44,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         pagePanel = new JPanel();
        pagePanel.setLayout(new GridLayout(1,100,0,0)); 
         pagePanel.setLayout(null);
-        pagePanel.setBackground(Color.RED);
+        pagePanel.setBackground(Color.lightGray);
         
 //        for(int i = 0; i < 100; i++)  
 //        {  
@@ -54,7 +54,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         //滚动屏
         backPanel  = new JPanel();
         this.add(backPanel);
-        backPanel.setBackground(Color.ORANGE);
+        backPanel.setBackground(Color.white);
         backPanel.setLocation(0,42);
         backPanel.setSize(800, 158);
         
@@ -66,7 +66,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         //scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
       //  scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.H);
         //----------------------添加按钮-----------------------------------------------------------------------------------
-        add = new JButton("新页");
+        add = new JButton(new ImageIcon("src/main/java/img/newpage.png"));
         add.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		SubPreviewPanel newpage = new SubPreviewPanel();
@@ -82,7 +82,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         		// pagePanel.repaint();
         		 backPanel.add(scrollPane);
         	        scrollPane.setLocation(0,0);
-        	        scrollPane.setBackground(Color.PINK);
+        	        scrollPane.setBackground(Color.white);
         	        scrollPane.setSize(800, 158);
         	        scrollPane.setVisible(true);
         	        scrollPane.repaint();    	       
@@ -93,12 +93,12 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         
         funcPanel = new JPanel();
         funcPanel.setLayout(null);
-        funcPanel.setBackground(Color.blue);
+        funcPanel.setBackground(Color.lightGray);
         this.add(funcPanel);
         funcPanel.setSize(800, 42);
         funcPanel.setLocation(0,0);
         funcPanel.add(add);
-        add.setSize(45, 42);
+        add.setSize(32, 32);
         add.setLocation(758,0);
         
         
