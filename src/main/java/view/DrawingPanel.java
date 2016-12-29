@@ -55,8 +55,9 @@ import common.Position;
  */
 class DrawingPanel extends JPanel implements ActionListener, MouseListener,  MouseMotionListener, Observable, Observer {
 	
-	// 工具栏  
-	public JPanel funcPanel;
+	public static String directoryName = "src/file/";	//默认的保存路径是src的file中
+	
+	public JPanel funcPanel;	// 工具栏  
 	
 	public JButton saveBtn;		// 保存按钮
 	
@@ -196,26 +197,7 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 			theDraw.removeAllElements();  
 		} 
 		else if (event.getSource() == saveBtn) {  
-			JFileChooser sfc = new JFileChooser();  
-			int flag = -1;  
-			try {    
-				flag = sfc.showSaveDialog(this);   // 显示保存文件的对话框   
-			} catch (HeadlessException he) {  
-				System.out.println("Save File Dialog Exception!");
-				he.printStackTrace();
-			}
-			// 获取选择文件的路径   
-			if (flag == JFileChooser.APPROVE_OPTION) {  
-				String filename = sfc.getSelectedFile().getPath();  
-				try {   
-					FileOutputStream fos = new FileOutputStream(filename);    
-					ObjectOutputStream oos = new ObjectOutputStream(fos);   
-					oos.writeObject(theDraw);  
-					oos.close();   
-				} catch (Exception ex) {  
-					ex.printStackTrace();  
-				}  
-			}   
+			saveDrawing();
 		}    
 		repaint();
 	}  
@@ -460,6 +442,8 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 		p.color = lineColor;  
 		theDraw.add(p);  
 		repaint(); 
+		
+		saveDrawing();// 每次画完一笔时，就自动保存一下，同时需要通知MainPanel，MainPanel更新PreviewPanel的内容
 	}   
 	
 	public void mouseMoved(MouseEvent e) { 
@@ -524,13 +508,29 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 			}  
 		}  
 	} 
-
-    public static void main(String[] args){
-    	JFrame jf = new JFrame();
-    	DrawingPanel dp = new DrawingPanel();
-    	jf.add(dp);
-    	jf.setSize(800, 600);
-    	jf.setVisible(true);
-    }
    
+    // 自动保存
+    public void saveDrawing(){
+    	/*JFileChooser sfc = new JFileChooser();  
+		int flag = -1;  
+		try {    
+			flag = sfc.showSaveDialog(this);   // 显示保存文件的对话框   
+		} catch (HeadlessException he) {  
+			System.out.println("Save File Dialog Exception!");
+			he.printStackTrace();
+		}*/
+		
+		//if (flag == JFileChooser.APPROVE_OPTION) {  // 获取选择文件的路径   
+		//	String filename = sfc.getSelectedFile().getPath();  
+			try {   
+				FileOutputStream fos = new FileOutputStream(filename);    
+				ObjectOutputStream oos = new ObjectOutputStream(fos);   
+				oos.writeObject(theDraw);  
+				oos.close();   
+			} catch (Exception ex) {  
+				ex.printStackTrace();  
+			}  
+		//}   
+    }
+    
 }

@@ -52,7 +52,7 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
         binder.bindToAllModel(this);
 
         // 等待加载历史pages，可以考虑加入超时判定
-        historyLoadController.loadHistoryNotes();
+        //historyLoadController.loadHistoryNotes();
     }
 
     private void initPanes() {
@@ -61,19 +61,22 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
         previewPane = new PreviewPanel(this);
         drawingPane = new DrawingPanel();
         
-        
         this.addObserver(previewPane);
-
+        this.addObserver(drawingPane);
     }
 
     private void initView() {
         // 调整布局，添加各个子Panel等
         // 例：
-        previewPane.setLocation(0,0);
-        this.add(previewPane);
+    	this.setSize(700,500);
+    	this.setLayout(null);
+    	this.add(previewPane);
+    	this.add(drawingPane);
+    	previewPane.setLocation(0,0);
+        previewPane.setSize(200,200);
         drawingPane.setLocation(200, 100);
-        this.add(drawingPane);
-
+        drawingPane.setSize(600, 500);
+        this.setVisible(true);
         // 要处理DrawingPanel与PreviewPanel的Observe关系
 
     }
@@ -109,4 +112,12 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
 		
 	} 
 		
+    public static void main(String[] args){
+    	JFrame jf = new JFrame();
+    	MainPanel mp = new MainPanel();
+    	jf.add(mp);
+    	jf.setSize(800, 600);
+    	jf.setVisible(true);
+    }
+    
 }
