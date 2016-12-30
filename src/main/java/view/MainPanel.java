@@ -5,23 +5,18 @@ import common.Position;
 
 import javax.swing.*;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
 import common.*;
+import common.impl.PageDefault;
 import controller.HistoryNoteController;
 import controller.ObserveBindController;
 import controller.SaveNoteController;
@@ -38,7 +33,7 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
     
     public ArrayList<Page> pageList;
     public int totalPage = 0;
-    public int currentPage = -1;
+    public int currentPage = 1;
     
     // Controllers
     HistoryNoteController historyLoadController = HistoryNoteController.getInstance();
@@ -58,11 +53,11 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
         binder.bindToAllModel(this); // 绑定Model相关模块
 
 //        historyLoadController.loadHistoryNotes();
-//        pageList = historyLoadController.getPages();
-//        if (pageList != null) {
-//        	totalPage = pageList.size();
-//        }
-//        System.out.println("Total Page: "+totalPage);
+        pageList = historyLoadController.getPages();
+        if (pageList != null) {
+        	totalPage = pageList.size();
+        }
+        System.out.println("Total Page: "+totalPage);
     }
 
     // 初始化子Panel，建立Observer/Observable关系
@@ -109,8 +104,9 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
         else if (arg.getType() == MessageType.PAGE_ALTERED) { // 从DrawingPanel中传来的方法
         	System.out.println("This is Main + page_alter");
         	notifyObservers(arg);	
-        	ArrayList<Page> pages = (ArrayList<Page>) arg.getContent();
-        	pageSaveController.savePages(pages);
+        	Page thisPage = new PageDefault((ArrayList<Position>)arg.getContent(), currentPage);
+        	pageList.add(thisPage);
+        	pageSaveController.savePages(pageList);
         }
         else if (arg.getType() == MessageType.PAGE_REPLACE) {}
         	System.out.print("This is Main + page_replace"); // 从PreviewPanel中传来的方法
