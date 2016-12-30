@@ -14,7 +14,7 @@ public class NotebookLauncher {
     	jf.add(mp);
     	jf.setSize(mp.width, mp.height);
     	jf.setResizable(false);
-    	jf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    	jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	jf.setVisible(true);
     }
 }
