@@ -84,15 +84,11 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         		pagePanel.removeAll();
 //        		pagePanel.setLayout(new GridLayout(1,100,2,2));
         		
-        		
-        		
+       	
         		//------　Use FlowLayout instead
         		pagePanel.setLayout(new FlowLayout());
         		//------------------------------
-        		
-        		
-        		
-        		//pagePanel.setLayout(null);
+      
         		for(SubPreviewPanel subpanel: subPanelList){
         			pagePanel.add(subpanel);
         		}
@@ -112,10 +108,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         	     //------------- Refresh layout
         	     scrollPane.doLayout();
         	     // ---------------------
-        	     
-        	     
-        	     
-        	     
+        	    	     
         	     //通知mainPanel将drawing加载为空白页       	     
         	     addObserver(parent);//添加mainPanel为preview的观察者
         	     ObMessage blankpage = new ObMessage(MessageType.PAGE_REPLACE,blank);
@@ -145,6 +138,46 @@ class PreviewPanel extends JPanel implements Observable, Observer {
 
     public void update(Observable o, ObMessage arg) {
         // 处理HISTORY_UPDATE与PAGE_ALTERED
+    	if(arg.getType().equals(MessageType.PAGE_ALTERED)){
+    	//用于提示某一页内容发生了较大变动，由DrawingPanel发出，给PreviewPanel，附带内容为Page
+    		Page updatePage = (PageDefault)arg.getContent();//更新后page的内容
+    		int pagenumber = updatePage.getNumber();
+    		subPanelList.get(pagenumber).setPage(updatePage);
+    		subPanelList.get(pagenumber).repaint();//重画，可能会重画不出来   		
+    	}
+    	
+    	if(arg.getType().equals(MessageType.HISTORY_UPDATE)){
+    		subPanelList.clear();
+    		ArrayList<Page> history_page = (ArrayList<Page>) arg.getContent();
+    		//TODO 
+    		for(Page page: history_page){
+    			SubPreviewPanel subpanel = new SubPreviewPanel(page.getNumber());
+    			subpanel.setPage(page);//设置subpreview的历史信息和页数信息
+    			subPanelList.add(subpanel);
+    		}
+    //显示历史信息		
+    		pagePanel.removeAll();
+    		//------　Use FlowLayout instead
+    		pagePanel.setLayout(new FlowLayout());
+    		
+    		for(SubPreviewPanel subpanel: subPanelList){
+    			pagePanel.add(subpanel);
+    		}
+    		 backPanel.removeAll();
+    		 scrollPane = new JScrollPane(pagePanel);
+    		// pagePanel.repaint();
+    		 backPanel.add(scrollPane);
+    	        scrollPane.setLocation(0,0);
+    	        scrollPane.setBackground(Color.white);
+    	        scrollPane.setSize(800, 158);
+    	        scrollPane.setVisible(true);
+    	        scrollPane.repaint();    	       
+    	     backPanel.repaint();   
+    	    	     
+    	     //------------- Refresh layout
+    	     scrollPane.doLayout();
+    		
+    	}
     }
 
 	public void addObserver(Observer observer) {
