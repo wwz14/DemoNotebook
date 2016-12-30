@@ -33,7 +33,7 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
     
     public ArrayList<Page> pageList;
     public int totalPage = 0;
-    public int currentPage = 1;
+    public int currentPage = 0;
     
     // Controllers
     HistoryNoteController historyLoadController = HistoryNoteController.getInstance();
@@ -54,9 +54,10 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
 
 //        historyLoadController.loadHistoryNotes();
         pageList = historyLoadController.getPages();
-        if (pageList != null) {
-        	totalPage = pageList.size();
+        if (pageList == null) {
+        	pageList = new ArrayList<Page>();
         }
+        totalPage = pageList.size();
         System.out.println("Total Page: "+totalPage);
     }
 
@@ -101,19 +102,24 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
         	ArrayList<Page> pages = (ArrayList<Page>) arg.getContent();
             notifyObservers(arg);
         }
+        else if (arg.getType() == MessageType.PAGE_REPLACE) {
+    		System.out.print("This is Main + page_replace"); // 从PreviewPanel中传来的方法
+    		notifyObservers(arg);
+    	}
         else if (arg.getType() == MessageType.PAGE_ALTERED) { // 从DrawingPanel中传来的方法
         	System.out.println("This is Main + page_alter");
-        	notifyObservers(arg);	
         	Page thisPage = new PageDefault((ArrayList<Position>)arg.getContent(), currentPage);
         	pageList.add(thisPage);
         	pageSaveController.savePages(pageList);
+        	//System.out.println(thisPage.getClass());
+        	ObMessage obm = new ObMessage(arg.getType(), thisPage);
+        	notifyObservers(obm);
         }
-        else if (arg.getType() == MessageType.PAGE_REPLACE) {}
-        	System.out.print("This is Main + page_replace"); // 从PreviewPanel中传来的方法
-        	notifyObservers(arg);
+        
     }
 
     public void notifyObservers(ObMessage arg) {
+    	//System.out.println(arg.getContent().getClass());
         for (Observer observer : observers) {
             observer.update(this, arg);
         }
