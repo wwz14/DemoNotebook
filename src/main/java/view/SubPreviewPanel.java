@@ -19,10 +19,11 @@ import javax.swing.*;
 class SubPreviewPanel extends JPanel implements MouseListener {
 
     private Page page;
+    private int id;
 
-	public SubPreviewPanel()  {
+	public SubPreviewPanel(int id)  {
 		super();
-	        
+	        this.id =  id;
 	        /**设置场地容器的大小*/  
 	        this.setSize( 120,110);  
 	        this.setPreferredSize(new Dimension(120,110));  
@@ -69,6 +70,23 @@ class SubPreviewPanel extends JPanel implements MouseListener {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public Page getPage() {
+		return page;
+	}
+
+	public void setPage(Page page) {
+		this.page = page;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
     
+	
 
 }
