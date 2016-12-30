@@ -43,6 +43,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     public PreviewPanel(final MainPanel parent) {
         super();
         thisPanel = this;
+        addObserver(parent);//添加mainPanel为preview的观察者
     	//获得屏幕大小
     	Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
     	width = (int)screensize.getWidth();
@@ -85,7 +86,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         //scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
       //  scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.H);
         newsub();
-        addObserver(parent);//添加mainPanel为preview的观察者
+       
         //----------------------添加按钮-----------------------------------------------------------------------------------
         add = new JButton("添加");
         add.addActionListener(new ActionListener() {
@@ -150,7 +151,9 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     
     public void notifyObservers(ObMessage arg) {
         for (Observer obs : observers) {
+        	System.out.println("len: ------------------------------"+observers.size());
             obs.update(this,arg);
+            
         }
     }
 
