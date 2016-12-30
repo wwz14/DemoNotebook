@@ -1,3 +1,5 @@
+import javax.swing.JFrame;
+
 import controller.ObserveBindController;
 import view.MainPanel;
 
@@ -7,6 +9,12 @@ import view.MainPanel;
 public class NotebookLauncher {
 
     public static void main(String[] args) {
-        MainPanel pane = new MainPanel();
+    	JFrame jf = new JFrame();
+    	MainPanel mp = new MainPanel();
+    	jf.add(mp);
+    	jf.setSize(mp.width, mp.height);
+    	jf.setResizable(false);
+    	jf.setDefaultCloseOperation(1);
+    	jf.setVisible(true);
     }
 }

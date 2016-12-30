@@ -7,7 +7,9 @@ import javax.swing.*;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
@@ -31,16 +33,19 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
 
     private Set<Observer> observers = new HashSet<Observer>();
 
+    public int width;
+    public int height;
+    
     // Controllers
     HistoryNoteController historyLoadController = HistoryNoteController.getInstance();
     SaveNoteController pageSaveController = SaveNoteController.getInstance();
     ObserveBindController binder = ObserveBindController.getInstance();
    
-    // 以下为子Panel
+    // 子Panel
     private PreviewPanel previewPane;
     private DrawingPanel drawingPane;
 
-    // 以下为可能的内部状态变量
+    // 可能的内部状态变量
     int currentPage = 0;
 
     public MainPanel() {
@@ -48,16 +53,15 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
     	
         initPanes();
         initView();
-        // 绑定Model相关模块
-        binder.bindToAllModel(this);
+        
+        binder.bindToAllModel(this); // 绑定Model相关模块
 
         // 等待加载历史pages，可以考虑加入超时判定
         //historyLoadController.loadHistoryNotes();
     }
 
+    // 初始化子Panel，建立Observer/Observable关系
     private void initPanes() {
-        // 初始化各个子Panel，建立Observer/Observable关系
-        // 例：
         previewPane = new PreviewPanel(this);
         drawingPane = new DrawingPanel();
         
@@ -65,18 +69,28 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
         this.addObserver(drawingPane);
     }
 
+    // 调整布局和视图效果
     private void initView() {
-        // 调整布局，添加各个子Panel等
-        // 例：
-    	this.setSize(700,800);
+    	//获得屏幕大小
+    	Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+    	width = (int)screensize.getWidth();
+    	height = (int)screensize.getHeight();
+    	
+    	this.setSize(width,height);
     	this.setLayout(null);
     	this.add(previewPane);
     	this.add(drawingPane);
-    	previewPane.setLocation(0,400);
-        previewPane.setSize(800,200);
-        drawingPane.setLocation(0, 0);
-        drawingPane.setSize(800, 400);
+    	previewPane.setLocation(0, (int)height * 5 / 100);
+        previewPane.setSize((int)width * 20 / 100, (int)height * 99 / 100);
+        drawingPane.setLocation((int)width * 21 / 100, (int)height * 5 / 100);
+        drawingPane.setSize((int)width * 75 / 100, (int)height * 99 / 100);
+        
+        //设置drawingPanel的宽和高，在屏幕大小不一时保证背景笔记线的比例
+        drawingPane.width = (int)width * 75 / 100;
+        drawingPane.height = (int)width * 99 / 100;
+        
         this.setVisible(true);
+        
         // 要处理DrawingPanel与PreviewPanel的Observe关系
 
     }
@@ -112,12 +126,4 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
 		
 	} 
 		
-    public static void main(String[] args){
-    	JFrame jf = new JFrame();
-    	MainPanel mp = new MainPanel();
-    	jf.add(mp);
-    	jf.setSize(800, 600);
-    	jf.setVisible(true);
-    }
-    
 }

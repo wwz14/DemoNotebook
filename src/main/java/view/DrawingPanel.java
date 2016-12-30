@@ -58,6 +58,14 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 	
 	public static String directoryName = "src/file/";	//默认的保存路径是src的file中
 	
+	public int width;	// 本Panel的宽
+	public int height;	// 本Panel的高
+	
+	public int noteLineStartX;		// 笔记线的起始位置的横坐标
+	public int noteLineStartY;		// 第一行笔记线的纵坐标
+	public int noteLineLength;		// 笔记线的长度
+	public int noteLineHeight;		//笔记线的上下两行间距
+	
 	public JPanel funcPanel;	// 工具栏  
 	
 	public JButton saveBtn;		// 保存按钮
@@ -212,21 +220,18 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 	}   
 	
     public void drawNoteLines(Graphics g){
+    	noteLineStartX = (int)(width * 5 / 100);
+    	noteLineStartY = (int)(height * 5 / 100);
+    	noteLineLength = (int)(width * 90 / 100);
+    	noteLineHeight = (int)(height * 3 / 100);
+    	
     	g.setColor(Color.GRAY);
-    	g.drawLine(30, 80, 730, 80);
-    	g.drawLine(30, 130, 730, 130);
-    	g.drawLine(30, 180, 730, 180);
-    	g.drawLine(30, 230, 730, 230);
-    	g.drawLine(30, 280, 730, 280);
-    	g.drawLine(30, 330, 730, 330);
-    	g.drawLine(30, 380, 730, 380);
-    	g.drawLine(30, 430, 730, 430);
-    	g.drawLine(30, 480, 730, 480);
-    	g.drawLine(30, 530, 730, 530);
-    	//g.drawLine(30, 580, 730, 580);
-    	//g.drawLine(30, 630, 730, 630);
-    	//g.drawLine(30, 680, 730, 680);
-    	//g.drawLine(30, 730, 730, 730);
+
+    	for (int i=0; i<19; i++) {
+    		int currentY = noteLineStartY + i * noteLineHeight;
+    		g.drawLine(noteLineStartX, currentY, noteLineLength, currentY);
+    	}
+    
     }
     
 	// 从数组中取出一个点后画图  
