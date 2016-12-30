@@ -83,6 +83,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         scrollPane.setVisible(true);
         //scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
       //  scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.H);
+        newsub();
         //----------------------添加按钮-----------------------------------------------------------------------------------
         add = new JButton("添加");
         add.addActionListener(new ActionListener() {
@@ -203,5 +204,42 @@ class PreviewPanel extends JPanel implements Observable, Observer {
 	public void removeObserver(Observer observer) {
 		observers.remove(observer);
 		
+	}
+	
+	private void newsub() {
+		ArrayList<Position> viewList = new ArrayList();
+		Page blank = new PageDefault(viewList,subPanelList.size());
+		SubPreviewPanel newpage = new SubPreviewPanel(blank);//创建新的sunpanel
+		System.out.println("页数： "+subPanelList.size());
+		newpage.setPage(blank);//设置xinpanel的页信息
+		
+		subPanelList.add(newpage);
+		pagePanel.removeAll();
+//		pagePanel.setLayout(new GridLayout(1,100,2,2));
+		
+	
+		//------　Use FlowLayout instead
+		
+		pagePanel.setLayout(new FlowLayout());
+		//------------------------------
+
+		for(SubPreviewPanel subpanel: subPanelList){
+			pagePanel.add(subpanel);
+		}
+		 backPanel.removeAll();
+		 scrollPane = new JScrollPane(pagePanel);
+		// pagePanel.repaint();
+		 backPanel.add(scrollPane);
+	        scrollPane.setLocation(0,0);
+	        scrollPane.setBackground(Color.white);
+	        scrollPane.setSize((int)width * 20 / 100, (int)height * 99 / 100-29);
+	        scrollPane.setVisible(true);
+	        scrollPane.repaint();    	       
+	     backPanel.repaint();   
+	     
+	     
+	     
+	     //------------- Refresh layout
+	     scrollPane.doLayout();
 	}
 }
