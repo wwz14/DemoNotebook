@@ -164,7 +164,34 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     		Page updatePage = (PageDefault)arg.getContent();//更新后page的内容
     		int pagenumber = updatePage.getNumber();
     		subPanelList.get(pagenumber).setPage(updatePage);
-    		subPanelList.get(pagenumber).repaint();//重画，可能会重画不出来   		
+    		//subPanelList.get(pagenumber).repaint();//重画，可能会重画不出来  
+    		pagePanel.removeAll();
+//    		pagePanel.setLayout(new GridLayout(1,100,2,2));
+    		
+    	
+    		//------　Use FlowLayout instead
+    		
+    		pagePanel.setLayout(new FlowLayout());
+    		//------------------------------
+
+    		for(SubPreviewPanel subpanel: subPanelList){
+    			pagePanel.add(subpanel);
+    		}
+    		 backPanel.removeAll();
+    		 scrollPane = new JScrollPane(pagePanel);
+    		// pagePanel.repaint();
+    		 backPanel.add(scrollPane);
+    	        scrollPane.setLocation(0,0);
+    	        scrollPane.setBackground(Color.white);
+    	        scrollPane.setSize((int)width * 20 / 100, (int)height * 99 / 100-29);
+    	        scrollPane.setVisible(true);
+    	        scrollPane.repaint();    	       
+    	     backPanel.repaint();   
+    	     
+    	     
+    	     
+    	     //------------- Refresh layout
+    	     scrollPane.doLayout();
     	}
     	
     	if(arg.getType().equals(MessageType.HISTORY_UPDATE)){
