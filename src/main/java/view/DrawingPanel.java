@@ -56,6 +56,8 @@ import common.Position;
  */
 class DrawingPanel extends JPanel implements ActionListener, MouseListener,  MouseMotionListener, Observable, Observer {
 	
+	private MainPanel parent;
+	
 	public static String directoryName = "src/file/";	//默认的保存路径是src的file中
 	
 	public int width;	// 本Panel的宽
@@ -100,7 +102,9 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 	// 线条颜色，默认为黑色 
 	Color lineColor = Color.BLACK; 
 	
-	public DrawingPanel() {  
+	public DrawingPanel(MainPanel mp) {
+		this.parent = mp;
+		
 		this.setBackground(Color.WHITE);  
 		this.setLayout(new BorderLayout()); 
 		this.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));

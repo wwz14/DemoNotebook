@@ -63,7 +63,7 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
     // 初始化子Panel，建立Observer/Observable关系
     private void initPanes() {
         previewPane = new PreviewPanel(this);
-        drawingPane = new DrawingPanel();
+        drawingPane = new DrawingPanel(this);
         
         this.addObserver(previewPane);
         this.addObserver(drawingPane);
