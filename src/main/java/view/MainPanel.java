@@ -36,6 +36,10 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
     public int width;
     public int height;
     
+    public ArrayList<Page> pageList;
+    public int totalPage = 0;
+    public int currentPage = -1;
+    
     // Controllers
     HistoryNoteController historyLoadController = HistoryNoteController.getInstance();
     SaveNoteController pageSaveController = SaveNoteController.getInstance();
@@ -45,9 +49,6 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
     private PreviewPanel previewPane;
     private DrawingPanel drawingPane;
 
-    // 可能的内部状态变量
-    int currentPage = 0;
-
     public MainPanel() {
         super();
     	
@@ -56,8 +57,12 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
         
         binder.bindToAllModel(this); // 绑定Model相关模块
 
-        // 等待加载历史pages，可以考虑加入超时判定
-        //historyLoadController.loadHistoryNotes();
+//        historyLoadController.loadHistoryNotes();
+//        pageList = historyLoadController.getPages();
+//        if (pageList != null) {
+//        	totalPage = pageList.size();
+//        }
+//        System.out.println("Total Page: "+totalPage);
     }
 
     // 初始化子Panel，建立Observer/Observable关系
@@ -96,16 +101,20 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
     }
 
     public void update(Observable o, ObMessage arg) {
-        if (arg.getType()==MessageType.HISTORY_UPDATE) {
-            // 可能主Panel需要更新，也可能不需要
-            ArrayList<Page> pages = (ArrayList<Page>) arg.getContent();
-
-            // 但子Panel需要
+    	System.out.println("附加的参数类型为: "+arg.getContent().getClass());
+        if (arg.getType() == MessageType.HISTORY_UPDATE) {
+        	ArrayList<Page> pages = (ArrayList<Page>) arg.getContent();
             notifyObservers(arg);
-        } else {
-            // ...
         }
-
+        else if (arg.getType() == MessageType.PAGE_ALTERED) { // 从DrawingPanel中传来的方法
+        	System.out.println("This is Main + page_alter");
+        	notifyObservers(arg);	
+        	ArrayList<Page> pages = (ArrayList<Page>) arg.getContent();
+        	pageSaveController.savePages(pages);
+        }
+        else if (arg.getType() == MessageType.PAGE_REPLACE) {}
+        	System.out.print("This is Main + page_replace"); // 从PreviewPanel中传来的方法
+        	notifyObservers(arg);
     }
 
     public void notifyObservers(ObMessage arg) {

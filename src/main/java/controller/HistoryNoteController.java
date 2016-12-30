@@ -1,5 +1,9 @@
 package controller;
 
+import java.util.ArrayList;
+
+import common.Page;
+
 import controller.impl.HistoryNoteControllerDefault;
 
 /**
@@ -8,6 +12,7 @@ import controller.impl.HistoryNoteControllerDefault;
 public abstract class HistoryNoteController {
     private static HistoryNoteController instance = new HistoryNoteControllerDefault();
 
+    public abstract ArrayList<Page> getPages();
     public abstract void loadHistoryNotes();
 
     public static HistoryNoteController getInstance() {

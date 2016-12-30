@@ -44,6 +44,7 @@ import common.MessageType;
 import common.ObMessage;
 import common.Observable;
 import common.Observer;
+import common.Page;
 import common.Position;
 
 /**
@@ -57,7 +58,9 @@ import common.Position;
 class DrawingPanel extends JPanel implements ActionListener, MouseListener,  MouseMotionListener, Observable, Observer {
 	
 	private MainPanel parent;
-	
+
+    private Set<Observer> observers = new HashSet<Observer>();
+
 	public static String directoryName = "src/file/";	//默认的保存路径是src的file中
 	
 	public int width;	// 本Panel的宽
@@ -85,7 +88,7 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 	public JButton clearBtn;	// 清除画布内容按钮
 	
 	// 保存画图轨迹的数组
-	public Vector<Position> theDraw = new Vector<Position>(); 
+	public ArrayList<Position> theDraw = new ArrayList<Position>(); 
 	
 	//当前画图类型，默认为画笔 
 	public StyleType style = StyleType.PEN; 	
@@ -104,6 +107,7 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 	
 	public DrawingPanel(MainPanel mp) {
 		this.parent = mp;
+		observers.add(mp);
 		
 		this.setBackground(Color.WHITE);  
 		this.setLayout(new BorderLayout()); 
@@ -206,11 +210,12 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 			lineColor = JColorChooser.showDialog(null, "请选择颜色", Color.BLACK);   
 			colorIconLabel.setForeground(lineColor);   
 		} 
-		else if (event.getSource() == clearBtn) {   
-			theDraw.removeAllElements();  
+		else if (event.getSource() == clearBtn) {   // 清除画布，向外界通知新的变化
+			//theDraw.removeAllElements();  
+			theDraw.clear();
 		} 
-		else if (event.getSource() == saveBtn) {  
-			saveDrawing();
+		else if (event.getSource() == saveBtn) {  	// 显式保存，向外界通知新的变化
+			saveDrawings();
 		}    
 		repaint();
 	}  
@@ -442,7 +447,7 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 		// 用mouseReleased实现
 	}  
 	
-	// 鼠标松开则type = -1，停止画图，但仍记录轨迹 
+	// 鼠标松开，向外界通知新的变化，type = -1，停止画图，但仍记录轨迹 
 	public void mouseReleased(MouseEvent e) { 
 		Position p = new Position();  
 		p.x = e.getX();  
@@ -453,7 +458,7 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 		theDraw.add(p);  
 		repaint(); 
 		
-		saveDrawing();// 每次画完一笔时，就自动保存一下，同时需要通知MainPanel，MainPanel更新PreviewPanel的内容
+		saveDrawings();
 	}   
 	
 	public void mouseMoved(MouseEvent e) { 
@@ -477,8 +482,6 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 		repaint(); 
 	} 
 	
-    private Set<Observer> observers = new HashSet<Observer>();
-
     public void notifyObservers(ObMessage arg) {
         for (Observer obs : observers) {
             obs.update(this,arg);
@@ -495,60 +498,20 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 
     public void update(Observable source, ObMessage message) {
     	// 应该就是把PagePanel里面选择的Page加载到DrawingPanel里吧，就是所谓的“打开”操作
-    	// 需要后期修改…
-		JFileChooser ofc = new JFileChooser();   
-		int flag = -1;   
-		try {  
-			flag = ofc.showOpenDialog(this);  
-		} catch (HeadlessException he) {    
-			System.out.println("Open File Dialog Exception!"); 
-			he.printStackTrace();
-		}    
-		// 获取选择文件的路径 
-		if (flag == JFileChooser.APPROVE_OPTION) {  
-			String filename = ofc.getSelectedFile().getPath();  
-			try {    
-				FileInputStream fis = new FileInputStream(filename);     
-				ObjectInputStream ois = new ObjectInputStream(fis);      
-				theDraw = (Vector<Position>) ois.readObject();     
-				ois.close();  
-			}
-			catch (Exception ex) {    
-				System.out.println(ex);    
-			}  
-		}  
+    	if (message.getType() == MessageType.PAGE_REPLACE) { // 从MainPanel中传来的、来自于PreviewPanel的方法
+    		ArrayList<Position> pages = (ArrayList<Position>)message.getContent();
+    		theDraw = pages;
+    		repaint();
+    	} 
+    	else if (message.getType() == MessageType.PAGE_ALTERED) { // 从MainPanel中传来的、来自于自己的方法
+    		// 什么也不做
+    	}
 	} 
    
-    // 自动保存
-    public void saveDrawing(){
-    	/*JFileChooser sfc = new JFileChooser();  
-		int flag = -1;  
-		try {    
-			flag = sfc.showSaveDialog(this);   // 显示保存文件的对话框   
-		} catch (HeadlessException he) {  
-			System.out.println("Save File Dialog Exception!");
-			he.printStackTrace();
-		}*/
-		
-		//if (flag == JFileChooser.APPROVE_OPTION) {  // 获取选择文件的路径   
-		//	String filename = sfc.getSelectedFile().getPath();  
-			try {   
-				String fileName = directoryName + "";
-				FileOutputStream fos = new FileOutputStream(fileName);    
-				ObjectOutputStream oos = new ObjectOutputStream(fos);   
-				oos.writeObject(theDraw);  
-				oos.close(); 
-				
-				
-				
-				ObMessage obm = new ObMessage(MessageType.PAGE_ALTERED, this);
-				
-				
-				notifyObservers(obm);
-			} catch (Exception ex) {  
-				ex.printStackTrace();  
-			}  
-		//}   
+    //通知MainPanel，让MainPanel自动保存，并更新PreviewPanel的内容
+    public void saveDrawings(){
+    	ObMessage obm = new ObMessage(MessageType.PAGE_ALTERED, this.theDraw);
+		notifyObservers(obm);
     }
     
 }
