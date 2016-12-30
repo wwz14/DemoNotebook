@@ -162,18 +162,20 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     	if(arg.getType().equals(MessageType.PAGE_ALTERED)){
     	//用于提示某一页内容发生了较大变动，由DrawingPanel发出，给PreviewPanel，附带内容为Page
     		Page updatePage = (PageDefault)arg.getContent();//更新后page的内容
+    		//ArrayList<Position> position = updatePage.getView();
+    		for(int i = 0;i<updatePage.getView().size();i++){
+    			updatePage.getView().get(i).x/=10;
+    			updatePage.getView().get(i).y/=10;
+    		}
     		int pagenumber = updatePage.getNumber();
     		subPanelList.get(pagenumber).setPage(updatePage);
     		//subPanelList.get(pagenumber).repaint();//重画，可能会重画不出来  
     		pagePanel.removeAll();
-//    		pagePanel.setLayout(new GridLayout(1,100,2,2));
-    		
-    	
+//    		pagePanel.setLayout(new GridLayout(1,100,2,2)); 	
     		//------　Use FlowLayout instead
     		
     		pagePanel.setLayout(new FlowLayout());
     		//------------------------------
-
     		for(SubPreviewPanel subpanel: subPanelList){
     			pagePanel.add(subpanel);
     		}
@@ -186,10 +188,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     	        scrollPane.setSize((int)width * 20 / 100, (int)height * 99 / 100-29);
     	        scrollPane.setVisible(true);
     	        scrollPane.repaint();    	       
-    	     backPanel.repaint();   
-    	     
-    	     
-    	     
+    	     backPanel.repaint();     	     	     
     	     //------------- Refresh layout
     	     scrollPane.doLayout();
     	}
@@ -235,8 +234,12 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     		Page thepage = (PageDefault)arg.getContent();
     		 ArrayList<Position> theDraw = thepage.getView();
     		 for(Position p : theDraw){
+    			 System.out.println("p.x origin is "+p.x);
+    			 System.out.println("p.y origin is "+p.y);
     			 p.x=p.x*10;
     			 p.y=p.y*10;
+    			 System.out.println("p.x is "+p.x);
+    			 System.out.println("p.y is "+p.y);
     		 }
     		 Page realpage = new PageDefault(theDraw,thepage.getNumber());
     		 ObMessage pageinfo = new ObMessage(MessageType.PAGE_REPLACE,realpage);

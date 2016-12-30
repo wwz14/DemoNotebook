@@ -55,7 +55,7 @@ class SubPreviewPanel extends JPanel implements MouseListener,Observable{
 	        //this.setLayout(new BorderLayout());  
 	          //this.setLayout(BorderLayout.NORTH);
 	        /**创建场地容器的内层容器*/  
-	        SmallDrawPanel inJPanel = new SmallDrawPanel(p.getView());  
+	        SmallDrawPanel inJPanel = new SmallDrawPanel(p.getView()); 
 	        inJPanel.setLayout(null);  
 	        inJPanel.setSize((int)width * 75 / 1000, (int)height * 99 / 1000);  
 	        inJPanel.setBackground(Color.white);
