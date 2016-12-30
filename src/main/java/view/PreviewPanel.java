@@ -72,14 +72,14 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         backPanel  = new JPanel();
         this.add(backPanel);
         backPanel.setBackground(Color.green);
-        backPanel.setLocation(0,100);
-        backPanel.setSize((int)width * 20 / 100, (int)height * 99 / 100-100);
+        backPanel.setLocation(0,29);
+        backPanel.setSize((int)width * 20 / 100, (int)height * 99 / 100-29);
         
         scrollPane = new JScrollPane(pagePanel); 
         backPanel.add(scrollPane);
         scrollPane.setBackground(Color.ORANGE);
         scrollPane.setLocation(0,0);
-        scrollPane.setSize((int)width * 20 / 100, (int)height * 99 / 100-100);
+        scrollPane.setSize((int)width * 20 / 100, (int)height * 99 / 100-29);
         scrollPane.setVisible(true);
         //scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
       //  scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.H);
@@ -110,9 +110,9 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         		 scrollPane = new JScrollPane(pagePanel);
         		// pagePanel.repaint();
         		 backPanel.add(scrollPane);
-        	        scrollPane.setLocation(0,42+(int)height * 5 / 100);
+        	        scrollPane.setLocation(0,0);
         	        scrollPane.setBackground(Color.white);
-        	        scrollPane.setSize((int)width * 20 / 100, (int)height * 99 / 100-42);
+        	        scrollPane.setSize((int)width * 20 / 100, (int)height * 99 / 100-29);
         	        scrollPane.setVisible(true);
         	        scrollPane.repaint();    	       
         	     backPanel.repaint();   
@@ -182,7 +182,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     		 backPanel.add(scrollPane);
     	        scrollPane.setLocation(0,0);
     	        scrollPane.setBackground(Color.white);
-    	        scrollPane.setSize(800, 158);
+    	        scrollPane.setSize((int)width * 20 / 100, (int)height * 99 / 100-29);
     	        scrollPane.setVisible(true);
     	        scrollPane.repaint();    	       
     	     backPanel.repaint();   
