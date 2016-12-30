@@ -32,6 +32,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     private JPanel funcPanel;
     private JPanel backPanel;
     private JPanel pagePanel;
+    private PreviewPanel thisPanel;
     private JScrollPane scrollPane;
     private Set<Observer> observers = new HashSet<Observer>();
     private ArrayList<SubPreviewPanel> subPanelList = new ArrayList<SubPreviewPanel>();
@@ -41,7 +42,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
    
     public PreviewPanel(final MainPanel parent) {
         super();
-       
+        thisPanel = this;
     	//获得屏幕大小
     	Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
     	width = (int)screensize.getWidth();
@@ -84,6 +85,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         //scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
       //  scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.H);
         newsub();
+        addObserver(parent);//添加mainPanel为preview的观察者
         //----------------------添加按钮-----------------------------------------------------------------------------------
         add = new JButton("添加");
         add.addActionListener(new ActionListener() {
@@ -92,7 +94,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         		
         		ArrayList<Position> viewList = new ArrayList();
         		Page blank = new PageDefault(viewList,subPanelList.size());
-        		SubPreviewPanel newpage = new SubPreviewPanel(blank);//创建新的sunpanel
+        		SubPreviewPanel newpage = new SubPreviewPanel(blank,thisPanel);//创建新的sunpanel
         		System.out.println("页数： "+subPanelList.size());
         		newpage.setPage(blank);//设置xinpanel的页信息
         		
@@ -127,7 +129,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         	     // ---------------------
         	    	     
         	     //通知mainPanel将drawing加载为空白页       	     
-        	     addObserver(parent);//添加mainPanel为preview的观察者
+        	    
         	     ObMessage blankpage = new ObMessage(MessageType.PAGE_REPLACE,blank);
         	     notifyObservers(blankpage);
         	}
@@ -167,7 +169,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     		ArrayList<Page> history_page = (ArrayList<Page>) arg.getContent();
     		//TODO 
     		for(Page page: history_page){
-    			SubPreviewPanel subpanel = new SubPreviewPanel(page);
+    			SubPreviewPanel subpanel = new SubPreviewPanel(page,thisPanel);
     			subpanel.setPage(page);//设置subpreview的历史信息和页数信息
     			subPanelList.add(subpanel);
     		}
@@ -194,6 +196,14 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     	     scrollPane.doLayout();
     		
     	}
+    	
+    	if(arg.getType().equals(MessageType.PAGE_REPLACE)){
+    		//交给mainpanel
+    		//得到被点page
+    		Page thepage = (PageDefault)arg.getContent();
+    		 ObMessage pageinfo = new ObMessage(MessageType.PAGE_REPLACE,thepage);
+    	     notifyObservers(pageinfo);
+    	}
     }
 
 	public void addObserver(Observer observer) {
@@ -209,7 +219,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
 	private void newsub() {
 		ArrayList<Position> viewList = new ArrayList();
 		Page blank = new PageDefault(viewList,subPanelList.size());
-		SubPreviewPanel newpage = new SubPreviewPanel(blank);//创建新的sunpanel
+		SubPreviewPanel newpage = new SubPreviewPanel(blank,thisPanel);//创建新的sunpanel
 		System.out.println("页数： "+subPanelList.size());
 		newpage.setPage(blank);//设置xinpanel的页信息
 		
