@@ -3,12 +3,16 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import javax.swing.*;
+import javax.swing.text.View;
+
 import common.*;
+import common.impl.PageDefault;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -32,7 +36,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
    
     
 
-    public PreviewPanel(MainPanel parent) {
+    public PreviewPanel(final MainPanel parent) {
         super();
         this.parent = parent;
         this.setBackground(Color.lightGray);
@@ -69,10 +73,25 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         add = new JButton(new ImageIcon("src/main/java/img/newpage.png"));
         add.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		SubPreviewPanel newpage = new SubPreviewPanel();
+        		SubPreviewPanel newpage = new SubPreviewPanel(subPanelList.size());//创建新的sunpanel
+        		
+        		ArrayList<Position> viewList = new ArrayList();
+        		Page blank = new PageDefault(viewList,newpage.getId());
+        		System.out.println("页数： "+subPanelList.size());
+        		newpage.setPage(blank);//设置xinpanel的页信息
+        		
         		subPanelList.add(newpage);
         		pagePanel.removeAll();
-        		pagePanel.setLayout(new GridLayout(1,100,2,2)); 
+//        		pagePanel.setLayout(new GridLayout(1,100,2,2));
+        		
+        		
+        		
+        		//------　Use FlowLayout instead
+        		pagePanel.setLayout(new FlowLayout());
+        		//------------------------------
+        		
+        		
+        		
         		//pagePanel.setLayout(null);
         		for(SubPreviewPanel subpanel: subPanelList){
         			pagePanel.add(subpanel);
@@ -87,6 +106,20 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         	        scrollPane.setVisible(true);
         	        scrollPane.repaint();    	       
         	     backPanel.repaint();   
+        	     
+        	     
+        	     
+        	     //------------- Refresh layout
+        	     scrollPane.doLayout();
+        	     // ---------------------
+        	     
+        	     
+        	     
+        	     
+        	     //通知mainPanel将drawing加载为空白页       	     
+        	     addObserver(parent);//添加mainPanel为preview的观察者
+        	     ObMessage blankpage = new ObMessage(MessageType.PAGE_REPLACE,blank);
+        	     notifyObservers(blankpage);
         	}
         });
         //-------------------------------------------按钮栏-------------------------------------------------------------------
@@ -99,12 +132,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         funcPanel.setLocation(0,0);
         funcPanel.add(add);
         add.setSize(32, 32);
-        add.setLocation(758,0);
-        
-        
-        
-      
-        
+        add.setLocation(758,0);     
        // add.addActionListener(l);     
         
     }
