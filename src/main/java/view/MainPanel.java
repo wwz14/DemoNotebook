@@ -108,7 +108,7 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
     	}
         else if (arg.getType() == MessageType.PAGE_ALTERED) { // 从DrawingPanel中传来的方法
         	System.out.println("This is Main + page_alter");
-        	Page thisPage = new PageDefault((ArrayList<Position>)arg.getContent(), currentPage);
+        	PageDefault thisPage = new PageDefault((ArrayList<Position>)arg.getContent(), currentPage);
         	pageList.add(thisPage);
         	pageSaveController.savePages(pageList);
         	//System.out.println(thisPage.getClass());
@@ -119,7 +119,7 @@ public class MainPanel extends JPanel implements Observer, Observable, ActionLis
     }
 
     public void notifyObservers(ObMessage arg) {
-    	//System.out.println(arg.getContent().getClass());
+    	System.out.println(arg.getContent().getClass());
         for (Observer observer : observers) {
             observer.update(this, arg);
         }

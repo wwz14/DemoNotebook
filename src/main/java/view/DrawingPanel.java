@@ -46,6 +46,7 @@ import common.Observable;
 import common.Observer;
 import common.Page;
 import common.Position;
+import common.impl.PageDefault;
 
 /**
  * Created by 徐江河 on 2016/12/24.
@@ -499,7 +500,7 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
     public void update(Observable source, ObMessage message) {
     	// 应该就是把PagePanel里面选择的Page加载到DrawingPanel里，就是所谓的“打开”操作
     	if (message.getType() == MessageType.PAGE_REPLACE) { // 从MainPanel中传来的、来自于PreviewPanel的方法
-    		Page pages = (Page)message.getContent();
+    		PageDefault pages = (PageDefault)message.getContent();
     		theDraw = pages.getView();
     		repaint();
     	} 
