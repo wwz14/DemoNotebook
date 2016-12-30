@@ -51,7 +51,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         System.out.println("height:"+width);
        
         this.parent = parent;
-        this.setBackground(Color.pink);
+        this.setBackground(Color.lightGray);
         setLayout(null);
         
         final GridBagConstraints vertical = new GridBagConstraints();
@@ -71,26 +71,27 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         //滚动屏
         backPanel  = new JPanel();
         this.add(backPanel);
-        backPanel.setBackground(Color.green);
+        backPanel.setBackground(Color.white);
         backPanel.setLocation(0,29);
         backPanel.setSize((int)width * 20 / 100, (int)height * 99 / 100-29);
         
         scrollPane = new JScrollPane(pagePanel); 
         backPanel.add(scrollPane);
-        scrollPane.setBackground(Color.ORANGE);
+        scrollPane.setBackground(Color.white);
         scrollPane.setLocation(0,0);
         scrollPane.setSize((int)width * 20 / 100, (int)height * 99 / 100-29);
         scrollPane.setVisible(true);
         //scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
       //  scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.H);
         //----------------------添加按钮-----------------------------------------------------------------------------------
-        add = new JButton(new ImageIcon("src/main/java/img/newpage.png"));
+        add = new JButton("添加");
         add.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		SubPreviewPanel newpage = new SubPreviewPanel(subPanelList.size());//创建新的sunpanel
+        		
         		
         		ArrayList<Position> viewList = new ArrayList();
-        		Page blank = new PageDefault(viewList,newpage.getId());
+        		Page blank = new PageDefault(viewList,subPanelList.size());
+        		SubPreviewPanel newpage = new SubPreviewPanel(blank);//创建新的sunpanel
         		System.out.println("页数： "+subPanelList.size());
         		newpage.setPage(blank);//设置xinpanel的页信息
         		
@@ -100,6 +101,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         		
        	
         		//------　Use FlowLayout instead
+        		
         		pagePanel.setLayout(new FlowLayout());
         		//------------------------------
       
@@ -133,13 +135,13 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         
         funcPanel = new JPanel();
         funcPanel.setLayout(null);
-        funcPanel.setBackground(Color.CYAN);
+        funcPanel.setBackground(Color.lightGray);
         this.add(funcPanel);
         funcPanel.setSize((int)width * 20 / 100, 29);
         funcPanel.setLocation(0,0);
         funcPanel.add(add);
-        add.setSize(20, 25);
-        add.setLocation((int)width * 20 / 100-20,0);        
+        add.setSize(57, 25);
+        add.setLocation(210,0);        
         
     }
     
@@ -164,7 +166,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     		ArrayList<Page> history_page = (ArrayList<Page>) arg.getContent();
     		//TODO 
     		for(Page page: history_page){
-    			SubPreviewPanel subpanel = new SubPreviewPanel(page.getNumber());
+    			SubPreviewPanel subpanel = new SubPreviewPanel(page);
     			subpanel.setPage(page);//设置subpreview的历史信息和页数信息
     			subPanelList.add(subpanel);
     		}

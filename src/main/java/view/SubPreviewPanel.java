@@ -1,15 +1,19 @@
 package view;
 
 import common.Page;
+import common.Position;
+import type.StyleType;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Line2D;
 
 import javax.swing.*;
 
@@ -21,9 +25,10 @@ class SubPreviewPanel extends JPanel implements MouseListener {
     private Page page;
     private int id;
 
-	public SubPreviewPanel(int id)  {
+	public SubPreviewPanel(Page p)  {
 		super();
-	        this.id =  id;
+	        this.id =  p.getNumber();
+	        this.page = p;
 	        /**设置场地容器的大小*/  
 	        this.setSize( 120,110);  
 	        this.setPreferredSize(new Dimension(120,110));  
@@ -33,13 +38,13 @@ class SubPreviewPanel extends JPanel implements MouseListener {
 	        //this.setLayout(new BorderLayout());  
 	          //this.setLayout(BorderLayout.NORTH);
 	        /**创建场地容器的内层容器*/  
-	        JPanel inJPanel = new JPanel();  
+	        SmallDrawPanel inJPanel = new SmallDrawPanel(p.getView());  
 	        inJPanel.setLayout(null);  
 	        inJPanel.setSize(150, 110);  
 	        inJPanel.setBackground(Color.white);
 	        inJPanel.setLocation(this.getWidth()/2 - inJPanel.getSize().width/2,   
 	                this.getHeight()/2 - inJPanel.getSize().height/2);  
-	        inJPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray, 1));  
+	        inJPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray, 1));  
 	          
 	       // this.add(inJPanel,BorderLayout.NORTH);  
 	        this.add(inJPanel);
@@ -87,6 +92,7 @@ class SubPreviewPanel extends JPanel implements MouseListener {
 		this.id = id;
 	}
     
+	//画线
 	
 
 }

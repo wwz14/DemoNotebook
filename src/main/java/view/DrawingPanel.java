@@ -497,7 +497,7 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
     }
 
     public void update(Observable source, ObMessage message) {
-    	// 应该就是把PagePanel里面选择的Page加载到DrawingPanel里吧，就是所谓的“打开”操作
+    	// 应该就是把PagePanel里面选择的Page加载到DrawingPanel里，就是所谓的“打开”操作
     	if (message.getType() == MessageType.PAGE_REPLACE) { // 从MainPanel中传来的、来自于PreviewPanel的方法
     		ArrayList<Position> pages = (ArrayList<Position>)message.getContent();
     		theDraw = pages;
