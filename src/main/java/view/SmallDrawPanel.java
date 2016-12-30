@@ -31,12 +31,17 @@ int y2 = 0;
 		public void draw(Graphics2D g) { 
 			int n = theDraw.size();  
 			Position p;  
+			for(int j = 0;j<n;j++){
+				theDraw.get(j).x = theDraw.get(j).x/10;
+				theDraw.get(j).y = theDraw.get(j).y/10;
+			}
 			for (int i = 0; i < n; i++) {  
 				try {   
-					p = theDraw.get(i);  
+					p = theDraw.get(i); 
+					
 					if (p.type == StyleType.PEN) {// 画笔    
 						x1 = x2 = p.x;    
-						y1 = y2 = p.y;    
+						y1 = y2 = p.y/10;    
 						while (p.type == StyleType.PEN) {    
 							x2 = p.x;   
 							y2 = p.y;    

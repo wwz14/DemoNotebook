@@ -23,4 +23,5 @@ public class PageDefault implements Page ,Serializable {
         return view;
     }
     public int getNumber() { return number; }
+  
 }

@@ -14,6 +14,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -31,6 +32,8 @@ class SubPreviewPanel extends JPanel implements MouseListener,Observable{
 
     private Page page;
     private int id;
+    private int width;
+    private int height;
     private PreviewPanel parent;
     private Set<Observer> observers = new HashSet<Observer>();
 
@@ -39,8 +42,12 @@ class SubPreviewPanel extends JPanel implements MouseListener,Observable{
 		    this.parent = previewPanel;
 	        this.id =  p.getNumber();
 	        this.page = p;
+	      //获得屏幕大小
+	    	Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+	    	width = (int)screensize.getWidth();
+	    	height = (int)screensize.getHeight();
 	        /**设置场地容器的大小*/  
-	        this.setSize( 120,110);  
+	        this.setSize(120, 110);  
 	        this.setPreferredSize(new Dimension(120,110));  
 	          this.setBackground(Color.white);
 	        /**设置场地容器的布局*/  
@@ -50,7 +57,7 @@ class SubPreviewPanel extends JPanel implements MouseListener,Observable{
 	        /**创建场地容器的内层容器*/  
 	        SmallDrawPanel inJPanel = new SmallDrawPanel(p.getView());  
 	        inJPanel.setLayout(null);  
-	        inJPanel.setSize(150, 110);  
+	        inJPanel.setSize((int)width * 75 / 1000, (int)height * 99 / 1000);  
 	        inJPanel.setBackground(Color.white);
 	        inJPanel.setLocation(this.getWidth()/2 - inJPanel.getSize().width/2,   
 	                this.getHeight()/2 - inJPanel.getSize().height/2);  

@@ -206,7 +206,13 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     		//得到被点page
     		System.out.println(o.getClass().getSimpleName());
     		Page thepage = (PageDefault)arg.getContent();
-    		 ObMessage pageinfo = new ObMessage(MessageType.PAGE_REPLACE,thepage);
+    		 ArrayList<Position> theDraw = thepage.getView();
+    		 for(Position p : theDraw){
+    			 p.x=p.x*10;
+    			 p.y=p.y*10;
+    		 }
+    		 Page realpage = new PageDefault(theDraw,thepage.getNumber());
+    		 ObMessage pageinfo = new ObMessage(MessageType.PAGE_REPLACE,realpage);
     	     notifyObservers(pageinfo);
     	}
     }
