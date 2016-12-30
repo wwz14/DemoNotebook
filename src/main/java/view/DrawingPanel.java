@@ -40,6 +40,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import common.MessageType;
 import common.ObMessage;
 import common.Observable;
 import common.Observer;
@@ -527,7 +528,14 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 				FileOutputStream fos = new FileOutputStream(fileName);    
 				ObjectOutputStream oos = new ObjectOutputStream(fos);   
 				oos.writeObject(theDraw);  
-				oos.close();   
+				oos.close(); 
+				
+				
+				
+				ObMessage obm = new ObMessage(MessageType.PAGE_ALTERED, this);
+				
+				
+				notifyObservers(obm);
 			} catch (Exception ex) {  
 				ex.printStackTrace();  
 			}  
