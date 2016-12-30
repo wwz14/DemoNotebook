@@ -200,9 +200,11 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     		
     	}
     	
-    	if(arg.getType().equals(MessageType.PAGE_REPLACE)){
+    	
+    	if(arg.getType().equals(MessageType.PAGE_REPLACE)&&o.getClass().getSimpleName().equals("SubPreviewPanel")){
     		//交给mainpanel
     		//得到被点page
+    		System.out.println(o.getClass().getSimpleName());
     		Page thepage = (PageDefault)arg.getContent();
     		 ObMessage pageinfo = new ObMessage(MessageType.PAGE_REPLACE,thepage);
     	     notifyObservers(pageinfo);
