@@ -48,9 +48,6 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     	Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
     	width = (int)screensize.getWidth();
     	height = (int)screensize.getHeight();
-  
-        System.out.println("width:"+width);
-        System.out.println("height:"+width);
        
         this.parent = parent;
         this.setBackground(Color.lightGray);
@@ -60,8 +57,6 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         vertical.fill = GridBagConstraints.VERTICAL;
         
         pagePanel = new JPanel();
-       pagePanel.setLayout(new GridLayout(1,100,0,0)); 
-        pagePanel.setLayout(null);
         pagePanel.setBackground(Color.lightGray);
 
         
@@ -83,6 +78,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         scrollPane.setLocation(0,0);
         scrollPane.setSize((int)width * 20 / 100, (int)height * 99 / 100-29);
         scrollPane.setVisible(true);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         //scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
       //  scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.H);
         newsub();
@@ -105,7 +101,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
         		
        	
         		//------　Use FlowLayout instead
-        		
+        		pagePanel.setMaximumSize(new Dimension(width/5,height*100));
         		pagePanel.setLayout(new FlowLayout());
         		//------------------------------
       
@@ -163,10 +159,6 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     	//用于提示某一页内容发生了较大变动，由DrawingPanel发出，给PreviewPanel，附带内容为Page
     		Page updatePage = (PageDefault)arg.getContent();//更新后page的内容
     		//ArrayList<Position> position = updatePage.getView();
-    		for(int i = 0;i<updatePage.getView().size();i++){
-    			updatePage.getView().get(i).x/=10;
-    			updatePage.getView().get(i).y/=10;
-    		}
     		int pagenumber = updatePage.getNumber();
     		subPanelList.get(pagenumber).setPage(updatePage);
     		//subPanelList.get(pagenumber).repaint();//重画，可能会重画不出来  
@@ -233,14 +225,6 @@ class PreviewPanel extends JPanel implements Observable, Observer {
     		System.out.println(o.getClass().getSimpleName());
     		Page thepage = (PageDefault)arg.getContent();
     		 ArrayList<Position> theDraw = thepage.getView();
-    		 for(Position p : theDraw){
-    			 System.out.println("p.x origin is "+p.x);
-    			 System.out.println("p.y origin is "+p.y);
-    			 p.x=p.x*10;
-    			 p.y=p.y*10;
-    			 System.out.println("p.x is "+p.x);
-    			 System.out.println("p.y is "+p.y);
-    		 }
     		 Page realpage = new PageDefault(theDraw,thepage.getNumber());
     		 ObMessage pageinfo = new ObMessage(MessageType.PAGE_REPLACE,realpage);
     	     notifyObservers(pageinfo);
@@ -271,7 +255,7 @@ class PreviewPanel extends JPanel implements Observable, Observer {
 	
 		//------　Use FlowLayout instead
 		
-		pagePanel.setLayout(new FlowLayout());
+		pagePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		//------------------------------
 
 		for(SubPreviewPanel subpanel: subPanelList){

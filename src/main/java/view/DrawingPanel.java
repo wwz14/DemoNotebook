@@ -180,6 +180,8 @@ class DrawingPanel extends JPanel implements ActionListener, MouseListener,  Mou
 		addMouseMotionListener(this);   
 	}    
 	
+	
+
 	// 记录鼠标选择的功能  
 	public void actionPerformed(ActionEvent event) {  
 		if (event.getSource() == penBtn)  {  

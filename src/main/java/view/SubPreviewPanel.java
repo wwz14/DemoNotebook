@@ -65,6 +65,7 @@ class SubPreviewPanel extends JPanel implements MouseListener,Observable{
 	          
 	       // this.add(inJPanel,BorderLayout.NORTH);  
 	        this.add(inJPanel);
+	        this.setMinimumSize(new Dimension(width/6,inJPanel.getHeight()));
 	        addMouseListener(this); 
 	        addObserver(parent);//添加previewPanel为观察者
 	        

@@ -46,7 +46,7 @@ int y2 = 0;
 						while (p.type == StyleType.PEN) {    
 							x2 = p.x;   
 							y2 = p.y;    
-							Line2D t = new Line2D.Double(x1, y1, x2, y2);    
+							Line2D t = new Line2D.Double(x1/10.0, y1/10.0, x2/10.0, y2/10.0);    
 							g.setColor(p.color);    
 							g.draw(t);// 递归画图 
 							i++;     
@@ -62,7 +62,7 @@ int y2 = 0;
 					if (p.type == StyleType.BRUSH) {// 刷子 
 						while (p.type == StyleType.BRUSH) {     
 							g.setColor(p.color);   
-							g.drawString("●", p.x, p.y);// 采用字符使点变大      
+							g.drawString("●", p.x/10, p.y/10);// 采用字符使点变大      
 							i++;      
 							if (i == n) {     
 								i--;      
@@ -73,7 +73,7 @@ int y2 = 0;
 					if (p.type == StyleType.ERASER) {// 橡皮    
 						while (p.type == StyleType.ERASER) {     
 							g.setColor(Color.WHITE);     
-							g.drawString("■", p.x, p.y);// 采用字符使点变大    
+							g.drawString("■", p.x/10, p.y/10);// 采用字符使点变大    
 							i++;    
 							if (i == n) {    
 								i--;       
